@@ -1,0 +1,44 @@
+===========================
+Welcome
+===========================
+
+.. figure:: _static/home/banderole.png
+    :align: center
+
+.. warning::
+    01/2021: This is a new website currently under construction
+
+
+Who am I?
+==========
+
+An Analog/Hardware RF engineer -though I don't do much design myself anymore-
+, and a home tinkerer. 
+Even if I'm not a professional coder or a DSP engineer, I took an interest in SDR 
+(Software Defined Radio) and radio signal processing. When I discovered the RTL-SDR and how cheap it is
+I went down the rabbit hole. Since I only need an SDR dongle and my laptop to play,
+it has the added bonus of taking waaaaay less space in the living room than my usual electronics bench.
+
+What will you find here?
+========================
+
+This website is a collection of articles related to practical radio engineering, focused on SDR 
+and experiments I made with the RTL-SDR. All my code is in Python as I find this language perfect
+for learning and applying radio dsp concepts, thanks to its fantastic libraires such as Numpy, Scipy 
+and the likes.
+
+.. toctree::
+    :maxdepth: 1
+    :hidden:
+    :caption: SDR
+    
+    ./_static/SDR/rtl-sdr
+    ./_static/decimation/decimation
+
+.. toctree::
+    :maxdepth: 1
+    :hidden:
+    :caption: Others
+
+    ./_static/Others/RFU
+

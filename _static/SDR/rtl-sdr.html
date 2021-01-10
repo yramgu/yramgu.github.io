@@ -1,0 +1,343 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The RTL-SDR &mdash; Yann&#39;s SDR playground</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="Yann&#39;s SDR playground" href="../../index.html"/>
+        <link rel="next" title="Decimation" href="../decimation/decimation.html"/>
+        <link rel="prev" title="Welcome" href="../../index.html"/> 
+
+  
+  <script src="../js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Yann's SDR playground
+          
+
+          
+            
+            <img src="../wavepic.png" class="logo" />
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">SDR</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The RTL-SDR</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#little-history">Little history</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#architecture-and-characteristics">Architecture and characteristics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#useful-links">Useful links</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../decimation/decimation.html">Decimation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Others/RFU.html">RFU</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Yann's SDR playground</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>The RTL-SDR</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="the-rtl-sdr">
+<h1>The RTL-SDR<a class="headerlink" href="#the-rtl-sdr" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="little-history">
+<h2>Little history<a class="headerlink" href="#little-history" title="Permalink to this headline">¶</a></h2>
+<p>The ‘discovery’ of the RTL-SDR was a major revolution in the world of Radio.
+Before then, SDRs were really expensive gear and mostly confined to engineering or research labs.
+Then in the early 2010’s, some clever people found (more information <a class="reference external" href="https://www.rtl-sdr.com/about-rtl-sdr/#:~:text=The%20origins%20of%20RTL%2DSDR,based%20on%20the%20RTL2832U%20chipset.&amp;text=Over%20the%20years%20since%20its,can%20access%20the%20radio%20spectrum.">here</a>)
+that we could take cheap DVB-T (Digital Video Brodcast) receiver dongles and access the
+raw IQ samples stream from the baseband chip directly.</p>
+<p><br /></p>
+<p>These dongles cost around 10$, making them available to anyone. The first ones to be used were the DVB-T dongles massively
+available on websites like eBay. They did have some issues: cheap crystal (i.e. poor frequency stability),
+thermal issues, dodgy connectors, etc. so some companies such as Nooelec and RTL-SDR blog decided to redesign the dongles to make them more
+robust with a TCXO instead of a crystal, metal enclosures, Low noise regulators, etc.
+These ruggedized versions are more expensive (around 20$),
+but for what we can achieve with that, it’s still ‘dirt cheap’.</p>
+<p><br /></p>
+<p>Over the years other types of affordable SDRs were made
+and we now have plenty of choices from 10$ to several thousands with everything in between.</p>
+<div class="figure align-center" id="id1">
+<span id="fig1"></span><a class="reference internal image-reference" href="../../_images/dongles.png"><img alt="../../_images/dongles.png" src="../../_images/dongles.png" style="width: 722.8000000000001px; height: 237.60000000000002px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Left: standard DVB-T - Center: Nooelec ruggedized RTL-SDR - Right: RTL-SDR.com ruggedized RTL-SDR</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<p>The driver that allows us the use the SDR dongles is the librtlsdr driver developed by Osmocom
+(see link at the bottom).</p>
+</div>
+<div class="section" id="architecture-and-characteristics">
+<h2>Architecture and characteristics<a class="headerlink" href="#architecture-and-characteristics" title="Permalink to this headline">¶</a></h2>
+<p>The fundamental architecture for most dongles is based on the R820T RFIC from Rafael Micro (<a class="reference external" href="https://rtl-sdr.com/wp-content/uploads/2013/04/R820T_datasheet-Non_R-20111130_unlocked.pdf">Datasheet</a>)
+and the RTL2832U baseband IC from Realtek (<a class="reference external" href="https://www.realtek.com/en/products/communications-network-ics/item/rtl2832u">website</a>)
+<a class="reference internal" href="#fig2"><span class="std std-numref">Fig. 2</span></a> shows a very simplified synoptic of the way the RTL-SDR operates.</p>
+<div class="figure align-center" id="id2">
+<span id="fig2"></span><a class="reference internal image-reference" href="../../_images/rtl-architecture.svg"><img alt="../../_images/rtl-architecture.svg" src="../../_images/rtl-architecture.svg" /></a>
+<p class="caption"><span class="caption-number">Fig. 2 </span><span class="caption-text">RTL-SDR architecture</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+<p>The R820T tuner has a classic single-ended superheterodyne architecture with an IF frequency of 3.57 MHz.
+It has a variable gain LNA at the input and a variable IF amplifier (VGA) after the IF filter.
+The mixer’s gain can also be adjusted in a limited way.
+With most SDR software using the librtsldr driver, the IF amplifier can be set to auto mode
+or set to fixed mode, but the IF gain in fixed mode cannot be changed. Similarly the LNA can be set to auto mode
+or fixed mode, and the gain in fixed mode can be set from 0 to 50dB. In reality, this range
+includes (LNA + Mixer) gain without distinction between the two. In recent versions of librtlsdr however,
+it appears LNA, Mixer and VGA gains can now be set independently achieving a combined range of 100dB.</p>
+<p><br /></p>
+<p>Once the IF signal gets out of the tuner, it’s sampled by the RTL2832’s ADC with a sampling frequency
+of 28.8 MHz. The ADC has a resolution of 8 bits, but an ENOB of ~7 bits. As explained in the article
+about decimation, this resolution can be improved through oversampling and decimation. The sampled
+signal is converted to IQ format and translated to baseband, then the I and Q branches are decimated and the resulting
+samples are made available through a USB bus. The final sampling rate can be chosen from 225 kHz to
+3.2 MHz; although the stream is known to be unstable (samples can be dropped) above 2.56 MHz.</p>
+<p><br /></p>
+<p>Some dongles also provide a direct access at the RTL2832’s ADC input, allowing for direct sampling.
+The RTL2832 can then sample the low-end of the spectrum (HF bands), where lots of Hams operate.</p>
+<p><br /></p>
+<p>In summary:</p>
+<p><br /></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 6%" />
+<col style="width: 64%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td colspan="2"><p>Frequency tuning range</p></td>
+<td><ul class="simple">
+<li><p>24 - 1766 MHz</p></li>
+<li><p>Down to ~DC for direct sampling capable devices</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td colspan="2"><p>Gain range (LNA + Mixer)</p></td>
+<td><p>0 - 50 dB</p></td>
+</tr>
+<tr class="row-odd"><td colspan="2"><p>R820T IF frequency</p></td>
+<td><p>3.57 MHz</p></td>
+</tr>
+<tr class="row-even"><td colspan="2"><p>RTL2832 Sampling Rate</p></td>
+<td><ul class="simple">
+<li><p>225.001 to 300 kHz</p></li>
+<li><p>900.001 to 3200.000 kHz</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td colspan="2"><p>RTL2832 ADC resolution</p></td>
+<td><p>8 bits (~7bits ENOB)</p></td>
+</tr>
+<tr class="row-even"><td colspan="2"><p>Current consumption</p></td>
+<td><p>About 300mA when sampling</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="useful-links">
+<h2>Useful links<a class="headerlink" href="#useful-links" title="Permalink to this headline">¶</a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 34%" />
+<col style="width: 7%" />
+<col style="width: 59%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td colspan="2"><p>RTL SDR blog</p></td>
+<td><p><a class="reference external" href="https://www.rtl-sdr.com/">https://www.rtl-sdr.com/</a></p></td>
+</tr>
+<tr class="row-even"><td colspan="2"><p>Osmocom project (librtlsdr)</p></td>
+<td><p><a class="reference external" href="https://osmocom.org/projects/rtl-sdr/">https://osmocom.org/projects/rtl-sdr/</a></p></td>
+</tr>
+<tr class="row-odd"><td colspan="2"><p>RTL information goldmine</p></td>
+<td><p><a class="reference external" href="http://superkuh.com/rtlsdr.html">http://superkuh.com/rtlsdr.html</a></p></td>
+</tr>
+<tr class="row-even"><td colspan="2"><p>librtlsdr python wrapper</p></td>
+<td><p><a class="reference external" href="https://pypi.org/project/pyrtlsdr/">https://pypi.org/project/pyrtlsdr/</a></p></td>
+</tr>
+<tr class="row-odd"><td colspan="2"><p>GNU Radio</p></td>
+<td><p><a class="reference external" href="https://www.gnuradio.org/">https://www.gnuradio.org/</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        
+      
+      
+        
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Yann&#39;s SDR playground.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE: 'true'
+        };
+    </script>
+      <script type="text/javascript" src="../jquery.js"></script>
+      <script type="text/javascript" src="../underscore.js"></script>
+      <script type="text/javascript" src="../doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>RFU &mdash; Standing Waves</title>
+  <title>Correlation &mdash; Standing Waves</title>
   
 
   
@@ -34,7 +34,8 @@
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
     <link rel="top" title="Standing Waves" href="../../index.html"/>
-        <link rel="prev" title="Correlation" href="../correlation/correlation.html"/> 
+        <link rel="next" title="RFU" href="../Others/RFU.html"/>
+        <link rel="prev" title="Decimation" href="../decimation/decimation.html"/> 
 
   
   <script src="../js/modernizr.min.js"></script>
@@ -81,14 +82,17 @@
             
             
                 <p class="caption"><span class="caption-text">SDR</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../SDR/rtl-sdr.html">The RTL-SDR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../decimation/decimation.html">Decimation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../correlation/correlation.html">Correlation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Correlation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#matched-filtering">Matched filtering</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">RFU</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Others/RFU.html">RFU</a></li>
 </ul>
 
             
@@ -130,7 +134,7 @@
     
       <li><a href="../../index.html">Home</a> &raquo;</li>
         
-      <li>RFU</li>
+      <li>Correlation</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -145,9 +149,41 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="rfu">
-<h1>RFU<a class="headerlink" href="#rfu" title="Permalink to this headline">¶</a></h1>
-<p>esff</p>
+  <div class="section" id="correlation">
+<h1>Correlation<a class="headerlink" href="#correlation" title="Permalink to this headline">¶</a></h1>
+<p>Correlation is one of the main tools in DSP. Mathematically speaking, the (discrete)
+correlation between two signals <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(h\)</span> is given by:</p>
+<div class="math notranslate nohighlight">
+\[x_{corr}[n] = \sum_{m=-\infty}^{m=+\infty} x[m] h[m-n]\]</div>
+<p>where <span class="math notranslate nohighlight">\(n\)</span> represents a time delay. It looks very similar to convolution,
+but it’s ultimately not the same thing. What correlation between two signals does
+is essentially ‘measuring’ how much the signals are similar to each other. The more
+similarities, the higher the correlation output. This is very
+useful for a number of things, and I will show a few pratical examples below.</p>
+<div class="section" id="matched-filtering">
+<h2>Matched filtering<a class="headerlink" href="#matched-filtering" title="Permalink to this headline">¶</a></h2>
+<p>Matched fitering is the process of correlating an unknown signal with a reference
+waveform. It is the optimal filter which allows maximizing the SNR in presence of AWGN noise.
+The reference waveform should be chosen to match a typical pattern or pulse shape
+that we are expecting in the incoming signal. If we define that expected pulse by a function <span class="math notranslate nohighlight">\(p(t)\)</span>
+and our matched filter impulse response a function <span class="math notranslate nohighlight">\(h(t)\)</span>, then it turns out the
+optimal <span class="math notranslate nohighlight">\(h(t)\)</span> would be the time-flipped conjugate version of <span class="math notranslate nohighlight">\(p(t)\)</span>, or:</p>
+<div class="math notranslate nohighlight">
+\[h(t) = p^{*}(-t)\]</div>
+<p>Let’s take the most simple example: if we consider a simple binary stream of data,
+the reference waveform would be a pulse of width equal to a single bit.
+This waveform is the famous rectangular function, defined by:</p>
+<div class="math notranslate nohighlight">
+\[p(t) = rect(t) = \Pi(t) = \Biggl\lbrace
+^{{\displaystyle 1 \text{, if } \biggl\lvert\frac{t-t_{0}}{T}\biggl\rvert &lt; \frac{1}{2}}}
+_{\displaystyle{0 \text{, elsewhere }}}\]</div>
+<p>with <span class="math notranslate nohighlight">\(t_{0}\)</span> the center position of the pulse (i.e. its delay) and <span class="math notranslate nohighlight">\(T\)</span> the pulse width.
+The autocorrelation of this function is a triangular pulse:</p>
+<div class="figure align-center" id="id1">
+<span id="fig8"></span><a class="reference internal image-reference" href="../../_images/rectCorr.svg"><img alt="../../_images/rectCorr.svg" src="../../_images/rectCorr.svg" /></a>
+<p class="caption"><span class="caption-number">Fig. 8 </span><span class="caption-text">Rectangular function and its autocorrelation</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+</div>
 </div>
 
 
@@ -156,6 +192,8 @@
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+
       
       
 

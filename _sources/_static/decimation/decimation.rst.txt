@@ -126,8 +126,8 @@ then the total noise power due to quantization noise for a perfect ADC is
 
     N_{q} = \frac{q^2}{12}
 
-That noise power is **constant, and independant the sampling frequency**. Now if we consider noise
-to have flat spectrum, and knowing that spectrum is band-limited by the sampling frequency; we can 
+The total noise power is **constant, and independant the sampling frequency**. Now if we consider noise
+to have flat spectrum, and knowing that spectrum is band-limited by the sampling frequency, we can 
 represent it as:
 
 .. _Fig7:
@@ -143,7 +143,8 @@ The Power Spectral Density (PSD) of that quantization noise can then be expresse
 
     PSD_{noise} = \frac{q^2}{12} \frac{1}{Fs} 
 
-It becomes clear that increasing the sampling frequency spreads the noise, so given the chance
+Since the total noise power is constant it becomes clear that increasing the sampling frequency 
+spreads the noise, so given the chance
 it's generally better to oversample first and then decimate. 
 
 ENOB improvement
@@ -173,7 +174,6 @@ that was lost to noise. Pushed to the extreme, it means we can get a high resolu
 a low resolution one. But this implies sampling at a higher frequency
 which can resut for example in increased power consumption. There is no magic so the whole system has to
 be considered to see whether this could have a negative impact elsewhere.
-
 
 
 .. |br| raw:: html

@@ -1,0 +1,56 @@
+===========================
+Correlation
+===========================
+
+Correlation is one of the main tools in DSP. Mathematically speaking, the (discrete)
+correlation between two signals :math:`x` and :math:`h` is given by:
+
+.. math::
+
+    x_{corr}[n] = \sum_{m=-\infty}^{m=+\infty} x[m] h[m-n]
+
+where :math:`n` represents a time delay. It looks very similar to convolution,
+but it's ultimately not the same thing. What correlation between two signals does
+is essentially 'measuring' how much the signals are similar to each other. The more 
+similarities, the higher the correlation output. This is very
+useful for a number of things, and I will show a few pratical examples below.
+
+Matched filtering
+===========================
+
+Matched fitering is the process of correlating an unknown signal with a reference
+waveform. It is the optimal filter which allows maximizing the SNR in presence of AWGN noise.
+The reference waveform should be chosen to match a typical pattern or pulse shape 
+that we are expecting in the incoming signal. If we define that expected pulse by a function :math:`p(t)`
+and our matched filter impulse response a function :math:`h(t)`, then it turns out the 
+optimal :math:`h(t)` would be the time-flipped conjugate version of :math:`p(t)`, or:
+
+.. math::
+
+    h(t) = p^{*}(-t)
+
+
+Let's take the most simple example: if we consider a simple binary stream of data,
+the reference waveform would be a pulse of width equal to a single bit.
+This waveform is the famous rectangular function, defined by:
+
+.. math::
+
+    p(t) = rect(t) = \Pi(t) = \Biggl\lbrace
+    ^{{\displaystyle 1 \text{, if } \biggl\lvert\frac{t-t_{0}}{T}\biggl\rvert < \frac{1}{2}}}
+    _{\displaystyle{0 \text{, elsewhere }}}
+
+with :math:`t_{0}` the center position of the pulse (i.e. its delay) and :math:`T` the pulse width.
+The autocorrelation of this function is a triangular pulse:
+
+
+.. _Fig8:
+.. figure:: rectCorr.svg
+    :align: center
+    :scale: 100%
+
+    Rectangular function and its autocorrelation
+
+.. |br| raw:: html
+
+   <br />

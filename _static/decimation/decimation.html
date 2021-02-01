@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Decimation &mdash; Yann&#39;s SDR playground</title>
+  <title>Decimation &mdash; Standing Waves</title>
   
 
   
@@ -33,8 +33,8 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="Yann&#39;s SDR playground" href="../../index.html"/>
-        <link rel="next" title="RFU" href="../Others/RFU.html"/>
+    <link rel="top" title="Standing Waves" href="../../index.html"/>
+        <link rel="next" title="Correlation" href="../correlation/correlation.html"/>
         <link rel="prev" title="The RTL-SDR" href="../SDR/rtl-sdr.html"/> 
 
   
@@ -54,7 +54,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> Yann's SDR playground
+            <a href="../../index.html" class="icon icon-home"> Standing Waves
           
 
           
@@ -90,6 +90,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#enob-improvement">ENOB improvement</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../correlation/correlation.html">Correlation</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Others</span></p>
 <ul>
@@ -108,7 +109,7 @@
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">Yann's SDR playground</a>
+          <a href="../../index.html">Standing Waves</a>
         
       </nav>
 
@@ -133,7 +134,7 @@
 <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html">Home</a> &raquo;</li>
         
       <li>Decimation</li>
     
@@ -245,8 +246,8 @@ As it turns out, <strong>sampling at a higher frequency doesn’t mean bringing 
 then the total noise power due to quantization noise for a perfect ADC is</p>
 <div class="math notranslate nohighlight">
 \[N_{q} = \frac{q^2}{12}\]</div>
-<p>That noise power is <strong>constant, and independant the sampling frequency</strong>. Now if we consider noise
-to have flat spectrum, and knowing that spectrum is band-limited by the sampling frequency; we can
+<p>The total noise power is <strong>constant, and independant the sampling frequency</strong>. Now if we consider noise
+to have flat spectrum, and knowing that spectrum is band-limited by the sampling frequency, we can
 represent it as:</p>
 <div class="figure align-center" id="id5">
 <span id="fig7"></span><a class="reference internal image-reference" href="../../_images/PSDnoise.svg"><img alt="../../_images/PSDnoise.svg" src="../../_images/PSDnoise.svg" /></a>
@@ -255,7 +256,8 @@ represent it as:</p>
 <p>The Power Spectral Density (PSD) of that quantization noise can then be expressed as</p>
 <div class="math notranslate nohighlight">
 \[PSD_{noise} = \frac{q^2}{12} \frac{1}{Fs}\]</div>
-<p>It becomes clear that increasing the sampling frequency spreads the noise, so given the chance
+<p>Since the total noise power is constant it becomes clear that increasing the sampling frequency
+spreads the noise, so given the chance
 it’s generally better to oversample first and then decimate.</p>
 </div>
 <div class="section" id="enob-improvement">
@@ -288,10 +290,10 @@ be considered to see whether this could have a negative impact elsewhere.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        
+
       
       
-        
+
       
     </div>
   
@@ -300,7 +302,7 @@ be considered to see whether this could have a negative impact elsewhere.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2021, Yann&#39;s SDR playground.
+        &copy; Copyright 2021, Standing Waves.
 
     </p>
   </div>

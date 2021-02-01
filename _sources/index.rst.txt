@@ -1,5 +1,5 @@
 ===========================
-Welcome
+Welcome to Standing Waves
 ===========================
 
 .. figure:: _static/home/banderole.png
@@ -34,6 +34,7 @@ and the likes.
     
     ./_static/SDR/rtl-sdr
     ./_static/decimation/decimation
+    ./_static/correlation/correlation
 
 .. toctree::
     :maxdepth: 1

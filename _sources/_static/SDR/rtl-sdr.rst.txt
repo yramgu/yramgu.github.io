@@ -18,14 +18,14 @@ available on websites like eBay. They did have some issues: cheap crystal (i.e. 
 thermal issues, dodgy connectors, etc. so some companies such as Nooelec and RTL-SDR blog decided to redesign the dongles to make them more
 robust with a TCXO instead of a crystal, metal enclosures, Low noise regulators, etc. 
 These ruggedized versions are more expensive (around 20$), 
-but for what we can achieve with that, it's still 'dirt cheap'. 
+but for what we can achieve with that, it's still incredibly cheap. 
 
 |br|
 
 Over the years other types of affordable SDRs were made
 and we now have plenty of choices from 10$ to several thousands with everything in between.     
 
-.. _Fig1:
+.. _sdrTypes:
 .. figure:: dongles.png
     :align: center
     :scale: 40%
@@ -40,9 +40,9 @@ Architecture and characteristics
 
 The fundamental architecture for most dongles is based on the R820T RFIC from Rafael Micro (`Datasheet <https://rtl-sdr.com/wp-content/uploads/2013/04/R820T_datasheet-Non_R-20111130_unlocked.pdf>`__)
 and the RTL2832U baseband IC from Realtek (`website <https://www.realtek.com/en/products/communications-network-ics/item/rtl2832u>`__)
-:numref:`Fig2` shows a very simplified synoptic of the way the RTL-SDR operates.
+:numref:`SDRarchitecture` shows a very simplified synoptic of the way the RTL-SDR operates.
 
-.. _Fig2:
+.. _SDRarchitecture:
 .. figure:: rtl-architecture.svg
     :align: center
     :scale: 40%

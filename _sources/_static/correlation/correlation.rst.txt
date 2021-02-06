@@ -2,6 +2,9 @@
 Correlation
 ===========================
 
+.. warning::
+    Article under construction
+
 Correlation is one of the main tools in DSP. Mathematically speaking, the (discrete)
 correlation between two signals :math:`x` and :math:`h` is given by:
 
@@ -43,13 +46,29 @@ This waveform is the famous rectangular function, defined by:
 with :math:`t_{0}` the center position of the pulse (i.e. its delay) and :math:`T` the pulse width.
 The autocorrelation of this function is a triangular pulse:
 
-
 .. _Fig8:
 .. figure:: rectCorr.svg
     :align: center
     :scale: 100%
 
     Rectangular function and its autocorrelation
+
+Now let's try with a real OOK-modulated signal recorded with the RTL-SDR:
+
+|br|
+
+.. _Matched filtering an OOK signal:
+.. figure:: ookCorr.svg
+    :align: center
+    :scale: 100%
+
+    Matched filtering an OOK signal
+
+bla :numref:`Matched filtering an OOK signal` bla
+
+**Top graph**: we plot the signal enveloppe. Then we define a reference pulse
+equivalent to one bit, and we correlate it with the recorded signal.
+The output is visible
 
 .. |br| raw:: html
 

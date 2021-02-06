@@ -35,7 +35,7 @@
         <link rel="search" title="Search" href="../../search.html"/>
     <link rel="top" title="Standing Waves" href="../../index.html"/>
         <link rel="next" title="Decimation" href="../decimation/decimation.html"/>
-        <link rel="prev" title="Welcome" href="../../index.html"/> 
+        <link rel="prev" title="Welcome to Standing Waves" href="../../index.html"/> 
 
   
   <script src="../js/modernizr.min.js"></script>
@@ -166,12 +166,12 @@ available on websites like eBay. They did have some issues: cheap crystal (i.e. 
 thermal issues, dodgy connectors, etc. so some companies such as Nooelec and RTL-SDR blog decided to redesign the dongles to make them more
 robust with a TCXO instead of a crystal, metal enclosures, Low noise regulators, etc.
 These ruggedized versions are more expensive (around 20$),
-but for what we can achieve with that, it’s still ‘dirt cheap’.</p>
+but for what we can achieve with that, it’s still incredibly cheap.</p>
 <p><br /></p>
 <p>Over the years other types of affordable SDRs were made
 and we now have plenty of choices from 10$ to several thousands with everything in between.</p>
 <div class="figure align-center" id="id1">
-<span id="fig1"></span><a class="reference internal image-reference" href="../../_images/dongles.png"><img alt="../../_images/dongles.png" src="../../_images/dongles.png" style="width: 722.8000000000001px; height: 237.60000000000002px;" /></a>
+<span id="sdrtypes"></span><a class="reference internal image-reference" href="../../_images/dongles.png"><img alt="../../_images/dongles.png" src="../../_images/dongles.png" style="width: 722.8000000000001px; height: 237.60000000000002px;" /></a>
 <p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Left: standard DVB-T - Center: Nooelec ruggedized RTL-SDR - Right: RTL-SDR.com ruggedized RTL-SDR</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <p>The driver that allows us the use the SDR dongles is the librtlsdr driver developed by Osmocom
@@ -181,9 +181,9 @@ and we now have plenty of choices from 10$ to several thousands with everything 
 <h2>Architecture and characteristics<a class="headerlink" href="#architecture-and-characteristics" title="Permalink to this headline">¶</a></h2>
 <p>The fundamental architecture for most dongles is based on the R820T RFIC from Rafael Micro (<a class="reference external" href="https://rtl-sdr.com/wp-content/uploads/2013/04/R820T_datasheet-Non_R-20111130_unlocked.pdf">Datasheet</a>)
 and the RTL2832U baseband IC from Realtek (<a class="reference external" href="https://www.realtek.com/en/products/communications-network-ics/item/rtl2832u">website</a>)
-<a class="reference internal" href="#fig2"><span class="std std-numref">Fig. 2</span></a> shows a very simplified synoptic of the way the RTL-SDR operates.</p>
+<a class="reference internal" href="#sdrarchitecture"><span class="std std-numref">Fig. 2</span></a> shows a very simplified synoptic of the way the RTL-SDR operates.</p>
 <div class="figure align-center" id="id2">
-<span id="fig2"></span><a class="reference internal image-reference" href="../../_images/rtl-architecture.svg"><img alt="../../_images/rtl-architecture.svg" src="../../_images/rtl-architecture.svg" /></a>
+<span id="sdrarchitecture"></span><a class="reference internal image-reference" href="../../_images/rtl-architecture.svg"><img alt="../../_images/rtl-architecture.svg" src="../../_images/rtl-architecture.svg" /></a>
 <p class="caption"><span class="caption-number">Fig. 2 </span><span class="caption-text">RTL-SDR architecture</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>The R820T tuner has a classic single-ended superheterodyne architecture with an IF frequency of 3.57 MHz.
@@ -291,7 +291,7 @@ The RTL2832 can then sample the low-end of the spectrum (HF bands), where lots o
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2021, Standing Waves.
+        &copy; Copyright 2021, Yannish Ramgulam.
 
     </p>
   </div>

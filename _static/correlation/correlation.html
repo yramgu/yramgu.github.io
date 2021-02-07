@@ -87,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../decimation/decimation.html">Decimation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Correlation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#matched-filtering">Matched filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sync-word-detection">Sync Word detection</a></li>
 </ul>
 </li>
 </ul>
@@ -155,8 +156,8 @@
 <p class="admonition-title">Warning</p>
 <p>Article under construction</p>
 </div>
-<p>Correlation is one of the main tools in DSP. Mathematically speaking, the (discrete)
-correlation between two signals <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(h\)</span> is given by:</p>
+<p>Correlation (or cross-correlation) is one of the main tools in DSP. Mathematically speaking,
+the (discrete) correlation between two signals <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(h\)</span> is given by:</p>
 <div class="math notranslate nohighlight">
 \[x_{corr}[n] = \sum_{m=-\infty}^{m=+\infty} x[m] h[m-n]\]</div>
 <p>where <span class="math notranslate nohighlight">\(n\)</span> represents a time delay. It looks very similar to convolution,
@@ -167,13 +168,10 @@ useful for a number of things, and I will show a few pratical examples below.</p
 <div class="section" id="matched-filtering">
 <h2>Matched filtering<a class="headerlink" href="#matched-filtering" title="Permalink to this headline">¶</a></h2>
 <p>Matched fitering is the process of correlating an unknown signal with a reference
-waveform. It is the optimal filter which allows maximizing the SNR in presence of AWGN noise.
-The reference waveform should be chosen to match a typical pattern or pulse shape
-that we are expecting in the incoming signal. If we define that expected pulse by a function <span class="math notranslate nohighlight">\(p(t)\)</span>
-and our matched filter impulse response a function <span class="math notranslate nohighlight">\(h(t)\)</span>, then it turns out the
-optimal <span class="math notranslate nohighlight">\(h(t)\)</span> would be the time-flipped conjugate version of <span class="math notranslate nohighlight">\(p(t)\)</span>, or:</p>
-<div class="math notranslate nohighlight">
-\[h(t) = p^{*}(-t)\]</div>
+waveform. The reference waveform should be chosen to match a typical pattern or pulse shape
+that we are expecting in the incoming signal. It acts as the optimal linear filter which
+allows maximizing the SNR in presence of AWGN noise.</p>
+<p><br /></p>
 <p>Let’s take the most simple example: if we consider a simple binary stream of data,
 the reference waveform would be a pulse of width equal to a single bit.
 This waveform is the famous rectangular function, defined by:</p>
@@ -184,19 +182,68 @@ _{\displaystyle{0 \text{, elsewhere }}}\]</div>
 <p>with <span class="math notranslate nohighlight">\(t_{0}\)</span> the center position of the pulse (i.e. its delay) and <span class="math notranslate nohighlight">\(T\)</span> the pulse width.
 The autocorrelation of this function is a triangular pulse:</p>
 <div class="figure align-center" id="id1">
-<span id="fig8"></span><a class="reference internal image-reference" href="../../_images/rectCorr.svg"><img alt="../../_images/rectCorr.svg" src="../../_images/rectCorr.svg" /></a>
+<span id="figrect"></span><a class="reference internal image-reference" href="../../_images/rectCorr.svg"><img alt="../../_images/rectCorr.svg" src="../../_images/rectCorr.svg" /></a>
 <p class="caption"><span class="caption-number">Fig. 8 </span><span class="caption-text">Rectangular function and its autocorrelation</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
-<p>Now let’s try with a real OOK-modulated signal recorded with the RTL-SDR:</p>
+<p>Now let’s try with a real OOK-modulated signal recorded with the RTL-SDR to illustrate:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The full python code for this example is available
+<a class="reference download internal" download="" href="../../_downloads/204028bfee18a31671bef9af69de6c5d/keyfob_iq_ook.zip"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a></p>
+</div>
 <p><br /></p>
 <div class="figure align-center" id="id2">
-<span id="matched-filtering-an-ook-signal"></span><a class="reference internal image-reference" href="../../_images/ookCorr.svg"><img alt="../../_images/ookCorr.svg" src="../../_images/ookCorr.svg" /></a>
+<span id="figookmatched"></span><a class="reference internal image-reference" href="../../_images/ookCorr.svg"><img alt="../../_images/ookCorr.svg" src="../../_images/ookCorr.svg" /></a>
 <p class="caption"><span class="caption-number">Fig. 9 </span><span class="caption-text">Matched filtering an OOK signal</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
-<p>bla <a class="reference internal" href="#matched-filtering-an-ook-signal"><span class="std std-numref">Fig. 9</span></a> bla</p>
-<p><strong>Top graph</strong>: we plot the signal enveloppe. Then we define a reference pulse
-equivalent to one bit, and we correlate it with the recorded signal.
-The output is visible</p>
+<p><strong>Top graph</strong>: we plot the signal enveloppe (in blue). We can easily distinguish the bit stream
+visually although it is quite noisy. If we decided to slice the signal using 0.5 (amplitude level)
+as the
+decision threshold, it wouldn’t work: there is too much noise, we would end up with
+a lot of glitches. So we define a reference pulse equivalent to one bit (in green),
+and we correlate it with the recorded signal.
+The output is visible as the orange trace: we can see the expected triangular shape,
+and also that the filter has gotten rid of most of the noise. On top of that,
+the peaks of the triangles are located at the middle of a bit, which will be very useful
+for time synchronisation.</p>
+<p><strong>Middle graph</strong>: To show the power of matched filtering, we drown the signal in noise
+to the point where it’s barely recognisable.</p>
+<p><strong>Bottom graph</strong>: we show the correlation output (in orange) between the noisy signal of the middle
+graph and the reference pulse. It’s compared to the correlation output of the
+top graph (in blue). We can see that despite the insanely high amount of noise,
+the correlation obtained from the noisy signal is nearly identical to the one obtained
+from the fairly clean signal shown in the top graph. The output is clean enough that it
+should be easy to recover the data.</p>
+</div>
+<div class="section" id="sync-word-detection">
+<h2>Sync Word detection<a class="headerlink" href="#sync-word-detection" title="Permalink to this headline">¶</a></h2>
+<p>In simple protocols used in embedded systems, radio frames are often built this way:</p>
+<p><br /></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 44%" />
+<col style="width: 23%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 15%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Preamble</strong> (usually ‘101010…’ type sequence, few bytes long)</p></td>
+<td><p><strong>Sync Word</strong> (Usually 2-4 bytes)</p></td>
+<td><p><strong>Header</strong></p></td>
+<td><p><strong>Payload</strong></p></td>
+<td><p><strong>CRC</strong> (often CRC16)</p></td>
+</tr>
+</tbody>
+</table>
+<p>The preamble gives time to the receiver to adjust its mechanisms of
+Gain Control (AGC), Frequency Error Correction (FEC), etc. and also allows it to synchronize
+its clock on the incoming signal. The problem is that the receiver can’t know based on the preamble
+alone when the ‘useful’ message actually starts.</p>
+<p><br /></p>
+<p>That’s where the synchronisation word come in: it’s a specific binary sequence which marks
+the beginning of the radio frame. So once the receiver has identified a preamble and locked onto it,
+it will begin looking for the sync word so it knows where it needs to start decoding the message.</p>
 </div>
 </div>
 

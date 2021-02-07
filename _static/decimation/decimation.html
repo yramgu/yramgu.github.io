@@ -160,23 +160,23 @@ then the resulting decimated signal is sampled at a rate <span class="math notra
 In reality, it’s a bit trickier than that: the process of simply reducing the sample rate is actually called
 downsampling. But if we stop there we might have aliasing issues, so we always low-pass filter
 the signal prior to downsampling and that whole operation is called decimation. It is often
-represented in block diagrams as shown in <a class="reference internal" href="#fig3"><span class="std std-numref">Fig. 3</span></a>:</p>
+represented in block diagrams as shown in <a class="reference internal" href="#decbloc"><span class="std std-numref">Fig. 3</span></a>:</p>
 <p><br /></p>
 <div class="figure align-center" id="id1">
-<span id="fig3"></span><a class="reference internal image-reference" href="../../_images/decimBlock.svg"><img alt="../../_images/decimBlock.svg" src="../../_images/decimBlock.svg" /></a>
+<span id="decbloc"></span><a class="reference internal image-reference" href="../../_images/decimBlock.svg"><img alt="../../_images/decimBlock.svg" src="../../_images/decimBlock.svg" /></a>
 <p class="caption"><span class="caption-number">Fig. 3 </span><span class="caption-text">Decimation block</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <div class="section" id="aliasing-issue">
 <h2>Aliasing issue<a class="headerlink" href="#aliasing-issue" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-center" id="id2">
-<span id="fig4"></span><a class="reference internal image-reference" href="../../_images/aliasing.svg"><img alt="../../_images/aliasing.svg" src="../../_images/aliasing.svg" /></a>
+<span id="figaliasing"></span><a class="reference internal image-reference" href="../../_images/aliasing.svg"><img alt="../../_images/aliasing.svg" src="../../_images/aliasing.svg" /></a>
 <p class="caption"><span class="caption-number">Fig. 4 </span><span class="caption-text">Aliasing</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>Say we are sampling at Frequency <span class="math notranslate nohighlight">\(Fs\)</span>: the Nyquist bandwidth will extend from DC to <span class="math notranslate nohighlight">\(\frac{Fs}{2}\)</span>,
 this is known as the Nyquist-Shannon sampling theorem.
 This theorem states that in order to sample a signal correctly, the sampling
 frequency must be superior to twice that signal’s bandwidth.
-In our example of <a class="reference internal" href="#fig4"><span class="std std-numref">Fig. 4</span></a>, there are two signals in the Nyquist bandwidth: our wanted <span class="math notranslate nohighlight">\(W\)</span> and an interferer <span class="math notranslate nohighlight">\(I\)</span>.
+In our example of <a class="reference internal" href="#figaliasing"><span class="std std-numref">Fig. 4</span></a>, there are two signals in the Nyquist bandwidth: our wanted <span class="math notranslate nohighlight">\(W\)</span> and an interferer <span class="math notranslate nohighlight">\(I\)</span>.
 If we reduce our sampling rate to <span class="math notranslate nohighlight">\(\frac{Fs}{D}\)</span>, our new Nyquist bandwidth now extends from DC to <span class="math notranslate nohighlight">\(\frac{Fs}{2D}\)</span>.
 <span class="math notranslate nohighlight">\(W\)</span> is in that bandwidth, so it’s fine. <span class="math notranslate nohighlight">\(I\)</span>, however, is now <cite>undersampled</cite>; but it’s still within
 the physical bandwidth of the receiver. Because of that, its spectrum could be folded back inside
@@ -184,7 +184,7 @@ our new Nyquist bandwidth which is what we call Aliasing.
 In order to get rid of potential aliases, we must first implement a low-pass filter (otherwise known as anti-aliasing
 filter) prior to the downsampling operation.</p>
 <p><br /></p>
-<p><a class="reference internal" href="#fig5"><span class="std std-numref">Fig. 5</span></a> shows an example to illustrate. We generate two tones sampled at a rate of 10 kHz:
+<p><a class="reference internal" href="#figaliasexperiment"><span class="std std-numref">Fig. 5</span></a> shows an example to illustrate. We generate two tones sampled at a rate of 10 kHz:
 One tone at 100 Hz and another tone at 700 Hz. The time-domain representation of that signal is given in Plot 1
 and its power spectrum is given in Plot 2. In this case, the Nyquist bandwidth extends from 0 to 5 kHz.</p>
 <p><br /></p>
@@ -208,7 +208,7 @@ operation can be done automatically using a dedicated function from Scipy:</p>
 <a class="reference download internal" download="" href="../../_downloads/a73be0e3addb70b961687570736d2be3/aliasing.py"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a></p>
 </div>
 <div class="figure align-center" id="id3">
-<span id="fig5"></span><a class="reference internal image-reference" href="../../_images/aliasing_python.svg"><img alt="../../_images/aliasing_python.svg" src="../../_images/aliasing_python.svg" /></a>
+<span id="figaliasexperiment"></span><a class="reference internal image-reference" href="../../_images/aliasing_python.svg"><img alt="../../_images/aliasing_python.svg" src="../../_images/aliasing_python.svg" /></a>
 <p class="caption"><span class="caption-number">Fig. 5 </span><span class="caption-text">Aliasing python experiment</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 </div>
@@ -219,11 +219,11 @@ the bandwidth, we are reducing the noise. This type of improvement is called a p
 and its value in dB can be calculated by the formula:</p>
 <div class="math notranslate nohighlight">
 \[G_{dB} = 10log_{10} \left(\frac{Fs_{old}}{Fs_{new}}\right)\]</div>
-<p>We can see in <a class="reference internal" href="#fig6"><span class="std std-numref">Fig. 6</span></a> an example of decimation on a signal acquired with the RTL: the
+<p>We can see in <a class="reference internal" href="#figdeciq"><span class="std std-numref">Fig. 6</span></a> an example of decimation on a signal acquired with the RTL: the
 signal was sampled at 2 MHz then decimated by 10 to 200 kHz. We can clearly see the noise reduction
 on the IQ signals.</p>
 <div class="figure align-center" id="id4">
-<span id="fig6"></span><a class="reference internal image-reference" href="../../_images/IQ_decimated.PNG"><img alt="../../_images/IQ_decimated.PNG" src="../../_images/IQ_decimated.PNG" style="width: 1260.0px; height: 302.0px;" /></a>
+<span id="figdeciq"></span><a class="reference internal image-reference" href="../../_images/IQ_decimated.PNG"><img alt="../../_images/IQ_decimated.PNG" src="../../_images/IQ_decimated.PNG" style="width: 1260.0px; height: 302.0px;" /></a>
 <p class="caption"><span class="caption-number">Fig. 6 </span><span class="caption-text">RTL-SDR decimated IQ</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </div>
 <p>The SNR improvement is <span class="math notranslate nohighlight">\(10log_{10} \left(\frac{2M}{200k}\right) = 10dB\)</span>. So just like that, we’ve reduced our noise
@@ -250,7 +250,7 @@ then the total noise power due to quantization noise for a perfect ADC is</p>
 to have flat spectrum, and knowing that spectrum is band-limited by the sampling frequency, we can
 represent it as:</p>
 <div class="figure align-center" id="id5">
-<span id="fig7"></span><a class="reference internal image-reference" href="../../_images/PSDnoise.svg"><img alt="../../_images/PSDnoise.svg" src="../../_images/PSDnoise.svg" /></a>
+<span id="figadcnoise"></span><a class="reference internal image-reference" href="../../_images/PSDnoise.svg"><img alt="../../_images/PSDnoise.svg" src="../../_images/PSDnoise.svg" /></a>
 <p class="caption"><span class="caption-number">Fig. 7 </span><span class="caption-text">Perfect ADC quantization noise Power Spectral Density</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </div>
 <p>The Power Spectral Density (PSD) of that quantization noise can then be expressed as</p>
@@ -258,7 +258,7 @@ represent it as:</p>
 \[PSD_{noise} = \frac{q^2}{12} \frac{1}{Fs}\]</div>
 <p>Since the total noise power is constant it becomes clear that increasing the sampling frequency
 spreads the noise, so given the chance
-it’s generally better to oversample first and then decimate.</p>
+it’s quite often better to oversample first and then decimate.</p>
 </div>
 <div class="section" id="enob-improvement">
 <h2>ENOB improvement<a class="headerlink" href="#enob-improvement" title="Permalink to this headline">¶</a></h2>

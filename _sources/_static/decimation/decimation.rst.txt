@@ -9,11 +9,11 @@ then the resulting decimated signal is sampled at a rate :math:`\frac{Fs}{D}`.
 In reality, it's a bit trickier than that: the process of simply reducing the sample rate is actually called
 downsampling. But if we stop there we might have aliasing issues, so we always low-pass filter 
 the signal prior to downsampling and that whole operation is called decimation. It is often
-represented in block diagrams as shown in :numref:`Fig3`:
+represented in block diagrams as shown in :numref:`decBloc`:
 
 |br|
 
-.. _Fig3:
+.. _decBloc:
 .. figure:: decimBlock.svg
     :align: center
     :scale: 40%
@@ -23,7 +23,7 @@ represented in block diagrams as shown in :numref:`Fig3`:
 Aliasing issue
 ===========================
 
-.. _Fig4:
+.. _figAliasing:
 .. figure:: aliasing.svg
     :align: center
     :scale: 40%
@@ -34,7 +34,7 @@ Say we are sampling at Frequency :math:`Fs`: the Nyquist bandwidth will extend f
 this is known as the Nyquist-Shannon sampling theorem. 
 This theorem states that in order to sample a signal correctly, the sampling
 frequency must be superior to twice that signal's bandwidth.
-In our example of :numref:`Fig4`, there are two signals in the Nyquist bandwidth: our wanted :math:`W` and an interferer :math:`I`. 
+In our example of :numref:`figAliasing`, there are two signals in the Nyquist bandwidth: our wanted :math:`W` and an interferer :math:`I`. 
 If we reduce our sampling rate to :math:`\frac{Fs}{D}`, our new Nyquist bandwidth now extends from DC to :math:`\frac{Fs}{2D}`. 
 :math:`W` is in that bandwidth, so it's fine. :math:`I`, however, is now `undersampled`; but it's still within
 the physical bandwidth of the receiver. Because of that, its spectrum could be folded back inside
@@ -44,7 +44,7 @@ filter) prior to the downsampling operation.
 
 |br|
 
-:numref:`Fig5` shows an example to illustrate. We generate two tones sampled at a rate of 10 kHz:
+:numref:`figAliasExperiment` shows an example to illustrate. We generate two tones sampled at a rate of 10 kHz:
 One tone at 100 Hz and another tone at 700 Hz. The time-domain representation of that signal is given in Plot 1
 and its power spectrum is given in Plot 2. In this case, the Nyquist bandwidth extends from 0 to 5 kHz.
 
@@ -73,7 +73,7 @@ operation can be done automatically using a dedicated function from Scipy:
     The full python code for this example is available
     :download:`here <../Scripts/aliasing.py>`
 
-.. _Fig5:
+.. _figAliasExperiment:
 .. figure:: aliasing_python.svg
     :align: center
     :scale: 40%
@@ -91,11 +91,11 @@ and its value in dB can be calculated by the formula:
 
     G_{dB} = 10log_{10} \left(\frac{Fs_{old}}{Fs_{new}}\right)
 
-We can see in :numref:`Fig6` an example of decimation on a signal acquired with the RTL: the 
+We can see in :numref:`figDecIQ` an example of decimation on a signal acquired with the RTL: the 
 signal was sampled at 2 MHz then decimated by 10 to 200 kHz. We can clearly see the noise reduction
 on the IQ signals.
 
-.. _Fig6:
+.. _figDecIQ:
 .. figure:: IQ_decimated.PNG
     :align: center
     :scale: 100%
@@ -130,7 +130,7 @@ The total noise power is **constant, and independant the sampling frequency**. N
 to have flat spectrum, and knowing that spectrum is band-limited by the sampling frequency, we can 
 represent it as:
 
-.. _Fig7:
+.. _figAdcNoise:
 .. figure:: PSDnoise.svg
     :align: center
     :scale: 100%
@@ -145,7 +145,7 @@ The Power Spectral Density (PSD) of that quantization noise can then be expresse
 
 Since the total noise power is constant it becomes clear that increasing the sampling frequency 
 spreads the noise, so given the chance
-it's generally better to oversample first and then decimate. 
+it's quite often better to oversample first and then decimate. 
 
 ENOB improvement
 ===========================

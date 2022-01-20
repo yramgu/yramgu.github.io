@@ -1,0 +1,10 @@
+===========================
+Demodulating a BSPK
+===========================
+
+.. warning::
+    Article under construction
+
+.. note::
+    The full python code for this example is available
+    :download:`here <../Scripts/bpsk-demod.zip>`

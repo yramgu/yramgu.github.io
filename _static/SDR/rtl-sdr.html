@@ -92,7 +92,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../decimation/decimation.html">Decimation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../correlation/correlation.html">Correlation</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Others</span></p>
+<p class="caption"><span class="caption-text">Demodulation examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../BPSK/BPSK.html">Demodulating a BSPK</a></li>
+</ul>
+<p class="caption"><span class="caption-text">RFU</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../Others/RFU.html">RFU</a></li>
 </ul>
@@ -162,17 +166,17 @@ that we could take cheap DVB-T (Digital Video Brodcast) receiver dongles and acc
 raw IQ samples stream from the baseband chip directly.</p>
 <p><br /></p>
 <p>These dongles cost around 10$, making them available to anyone. The first ones to be used were the DVB-T dongles massively
-available on websites like eBay. They did have some issues: cheap crystal (i.e. poor frequency stability),
-thermal issues, dodgy connectors, etc. so some companies such as Nooelec and RTL-SDR blog decided to redesign the dongles to make them more
+available on online selling platforms. They did have some issues: cheap crystal (i.e. poor frequency stability),
+thermal issues, dodgy connectors, etc. so some companies decided to redesign the dongles to make them more
 robust with a TCXO instead of a crystal, metal enclosures, Low noise regulators, etc.
-These ruggedized versions are more expensive (around 20$),
+These ruggedized versions are more expensive (around 20-30$),
 but for what we can achieve with that, it’s still incredibly cheap.</p>
 <p><br /></p>
 <p>Over the years other types of affordable SDRs were made
-and we now have plenty of choices from 10$ to several thousands with everything in between.</p>
+and we now have plenty of choices from 10$ to several thousands with everything in between. Here are some examples of RTL-SDR dongles:</p>
 <div class="figure align-center" id="id1">
 <span id="sdrtypes"></span><a class="reference internal image-reference" href="../../_images/dongles.png"><img alt="../../_images/dongles.png" src="../../_images/dongles.png" style="width: 722.8000000000001px; height: 237.60000000000002px;" /></a>
-<p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Left: standard DVB-T - Center: Nooelec ruggedized RTL-SDR - Right: RTL-SDR.com ruggedized RTL-SDR</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Left: standard DVB-T - Center: Nooelec ruggedized RTL-SDR - Right: RTL-SDR.com ruggedized RTL-SDR</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <p>The driver that allows us the use the SDR dongles is the librtlsdr driver developed by Osmocom
 (see link at the bottom).</p>
@@ -180,19 +184,19 @@ and we now have plenty of choices from 10$ to several thousands with everything 
 <div class="section" id="architecture-and-characteristics">
 <h2>Architecture and characteristics<a class="headerlink" href="#architecture-and-characteristics" title="Permalink to this headline">¶</a></h2>
 <p>The fundamental architecture for most dongles is based on the R820T RFIC from Rafael Micro (<a class="reference external" href="https://rtl-sdr.com/wp-content/uploads/2013/04/R820T_datasheet-Non_R-20111130_unlocked.pdf">Datasheet</a>)
-and the RTL2832U baseband IC from Realtek (<a class="reference external" href="https://www.realtek.com/en/products/communications-network-ics/item/rtl2832u">website</a>)
-<a class="reference internal" href="#sdrarchitecture"><span class="std std-numref">Fig. 2</span></a> shows a very simplified synoptic of the way the RTL-SDR operates.</p>
+and the RTL2832U baseband IC from Realtek (<a class="reference external" href="https://www.realtek.com/en/products/communications-network-ics/item/rtl2832u">website</a>).
+The picture below shows a very simplified synoptic of the way the RTL-SDR operates.</p>
 <div class="figure align-center" id="id2">
 <span id="sdrarchitecture"></span><a class="reference internal image-reference" href="../../_images/rtl-architecture.svg"><img alt="../../_images/rtl-architecture.svg" src="../../_images/rtl-architecture.svg" /></a>
-<p class="caption"><span class="caption-number">Fig. 2 </span><span class="caption-text">RTL-SDR architecture</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">RTL-SDR architecture</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>The R820T tuner has a classic single-ended superheterodyne architecture with an IF frequency of 3.57 MHz.
 It has a variable gain LNA at the input and a variable IF amplifier (VGA) after the IF filter.
 The mixer’s gain can also be adjusted in a limited way.
-With most SDR software using the librtsldr driver, the IF amplifier can be set to auto mode
+With most SDR software using the librtsldr driver, the IF amplifier can be set to auto (variable gain) mode
 or set to fixed mode, but the IF gain in fixed mode cannot be changed. Similarly the LNA can be set to auto mode
-or fixed mode, and the gain in fixed mode can be set from 0 to 50dB. In reality, this range
-includes (LNA + Mixer) gain without distinction between the two. In recent versions of librtlsdr however,
+or fixed mode, and the gain in fixed mode can be set from 0 to 50dB. In reality, this 50dB range
+includes both (LNA + Mixer) gains without distinction between the two. In recent versions of librtlsdr however,
 it appears LNA, Mixer and VGA gains can now be set independently achieving a combined range of 100dB.</p>
 <p><br /></p>
 <p>Once the IF signal gets out of the tuner, it’s sampled by the RTL2832’s ADC with a sampling frequency
@@ -200,7 +204,7 @@ of 28.8 MHz. The ADC has a resolution of 8 bits, but an ENOB of ~7 bits. As expl
 about decimation, this resolution can be improved through oversampling and decimation. The sampled
 signal is converted to IQ format and translated to baseband, then the I and Q branches are decimated and the resulting
 samples are made available through a USB bus. The final sampling rate can be chosen from 225 kHz to
-3.2 MHz; although the stream is known to be unstable (samples can be dropped) above 2.56 MHz.</p>
+3.2 MHz; although the stream is known to be unstable (samples will be dropped) above 2.56 MHz.</p>
 <p><br /></p>
 <p>Some dongles also provide a direct access at the RTL2832’s ADC input, allowing for direct sampling.
 The RTL2832 can then sample the low-end of the spectrum (HF bands), where lots of Hams operate.</p>
@@ -214,25 +218,21 @@ The RTL2832 can then sample the low-end of the spectrum (HF bands), where lots o
 <col style="width: 64%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td colspan="2"><p>Frequency tuning range</p></td>
-<td><ul class="simple">
-<li><p>24 - 1766 MHz</p></li>
-<li><p>Down to ~DC for direct sampling capable devices</p></li>
-</ul>
-</td>
+<tr class="row-odd"><td colspan="2" rowspan="2"><p>Frequency tuning range</p></td>
+<td><p>24 - 1766 MHz</p></td>
 </tr>
-<tr class="row-even"><td colspan="2"><p>Gain range (LNA + Mixer)</p></td>
+<tr class="row-even"><td><p>Down to ~DC for direct sampling capable devices</p></td>
+</tr>
+<tr class="row-odd"><td colspan="2"><p>Gain range (LNA + Mixer)</p></td>
 <td><p>0 - 50 dB</p></td>
 </tr>
-<tr class="row-odd"><td colspan="2"><p>R820T IF frequency</p></td>
+<tr class="row-even"><td colspan="2"><p>R820T IF frequency</p></td>
 <td><p>3.57 MHz</p></td>
 </tr>
-<tr class="row-even"><td colspan="2"><p>RTL2832 Sampling Rate</p></td>
-<td><ul class="simple">
-<li><p>225.001 to 300 kHz</p></li>
-<li><p>900.001 to 3200.000 kHz</p></li>
-</ul>
-</td>
+<tr class="row-odd"><td colspan="2" rowspan="2"><p>RTL2832 Sampling Rate</p></td>
+<td><p>225.001 to 300 kHz</p></td>
+</tr>
+<tr class="row-even"><td><p>900.001 to 3200.000 kHz</p></td>
 </tr>
 <tr class="row-odd"><td colspan="2"><p>RTL2832 ADC resolution</p></td>
 <td><p>8 bits (~7bits ENOB)</p></td>

@@ -6,26 +6,22 @@ Welcome to Standing Waves
     :align: center
 
 .. warning::
-    01/2021: This is a new website currently under construction
+    This is a new website currently under construction
 
 
 Who am I?
 ==========
 
-An Analog/Hardware RF engineer -though I don't do much design myself anymore-
-, and a home tinkerer. 
-Even if I'm not a professional coder or a DSP engineer, I took an interest in SDR 
-(Software Defined Radio) and radio signal processing. When I discovered the RTL-SDR and how cheap it is
-I went down the rabbit hole. Since I only need an SDR dongle and my laptop to play,
-it has the added bonus of taking waaaaay less space in the living room than my usual electronics bench.
+An RF/Hardware engineer, and a home tinkerer. 
+While I'm  not a professional coder or a DSP engineer, I took an interest in SDR 
+(Software Defined Radio) and radio signal processing as a hobby after discovering the very cheap RTL-SDR.
 
 What will you find here?
 ========================
 
 This website is a collection of articles related to practical radio engineering, focused on SDR 
-and experiments I made with the RTL-SDR. All my code is in Python as I find this language perfect
-for learning and applying radio dsp concepts, thanks to its fantastic libraires such as Numpy, Scipy 
-and the likes.
+and simple experiments I made using Python. It's not meant to provide mathematical rigour, but rather
+illustrate concepts in a pratical way.
 
 .. toctree::
     :maxdepth: 1
@@ -39,7 +35,14 @@ and the likes.
 .. toctree::
     :maxdepth: 1
     :hidden:
-    :caption: Others
+    :caption: Demodulation examples
+
+    ./_static/BPSK/BPSK
+
+.. toctree::
+    :maxdepth: 1
+    :hidden:
+    :caption: RFU
 
     ./_static/Others/RFU
 

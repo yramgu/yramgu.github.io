@@ -34,7 +34,7 @@
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
     <link rel="top" title="Standing Waves" href="../../index.html"/>
-        <link rel="next" title="RFU" href="../Others/RFU.html"/>
+        <link rel="next" title="Demodulating a BSPK" href="../BPSK/BPSK.html"/>
         <link rel="prev" title="Decimation" href="../decimation/decimation.html"/> 
 
   
@@ -88,10 +88,15 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Correlation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#matched-filtering">Matched filtering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sync-word-detection">Sync Word detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#noise-autocorrelation-properties">Noise autocorrelation properties</a></li>
 </ul>
 </li>
 </ul>
-<p class="caption"><span class="caption-text">Others</span></p>
+<p class="caption"><span class="caption-text">Demodulation examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../BPSK/BPSK.html">Demodulating a BSPK</a></li>
+</ul>
+<p class="caption"><span class="caption-text">RFU</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../Others/RFU.html">RFU</a></li>
 </ul>
@@ -152,11 +157,7 @@
             
   <div class="section" id="correlation">
 <h1>Correlation<a class="headerlink" href="#correlation" title="Permalink to this headline">¶</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Article under construction</p>
-</div>
-<p>Correlation (or cross-correlation) is one of the main tools in DSP. Mathematically speaking,
+<p>Correlation (or cross-correlation) is one of the main tools used in DSP. Mathematically speaking,
 the (discrete) correlation between two signals <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(h\)</span> is given by:</p>
 <div class="math notranslate nohighlight">
 \[x_{corr}[n] = \sum_{m=-\infty}^{m=+\infty} x[m] h[m-n]\]</div>
@@ -164,59 +165,74 @@ the (discrete) correlation between two signals <span class="math notranslate noh
 but it’s ultimately not the same thing. What correlation between two signals does
 is essentially ‘measuring’ how much the signals are similar to each other. The more
 similarities, the higher the correlation output. This is very
-useful for a number of things, and I will show a few pratical examples below.</p>
+useful for a number of things, and a few pratical examples are presented below.</p>
+<p><br /></p>
+<p>Correlation can be done in python with a dedicated function from scipy:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="n">correlation_result</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">correlate</span><span class="p">(</span><span class="n">signal_1</span><span class="p">,</span> <span class="n">signal_2</span><span class="p">)</span>
+</span></pre></div>
+</div>
 <div class="section" id="matched-filtering">
 <h2>Matched filtering<a class="headerlink" href="#matched-filtering" title="Permalink to this headline">¶</a></h2>
 <p>Matched fitering is the process of correlating an unknown signal with a reference
 waveform. The reference waveform should be chosen to match a typical pattern or pulse shape
-that we are expecting in the incoming signal. It acts as the optimal linear filter which
+that we are expecting in the incoming signal. The matched filter acts as the optimal
+linear filter which
 allows maximizing the SNR in presence of AWGN noise.</p>
 <p><br /></p>
 <p>Let’s take the most simple example: if we consider a simple binary stream of data,
 the reference waveform would be a pulse of width equal to a single bit.
 This waveform is the famous rectangular function, defined by:</p>
 <div class="math notranslate nohighlight">
-\[p(t) = rect(t) = \Pi(t) = \Biggl\lbrace
+\[rect(t) = \Pi(t) = \Biggl\lbrace
 ^{{\displaystyle 1 \text{, if } \biggl\lvert\frac{t-t_{0}}{T}\biggl\rvert &lt; \frac{1}{2}}}
 _{\displaystyle{0 \text{, elsewhere }}}\]</div>
 <p>with <span class="math notranslate nohighlight">\(t_{0}\)</span> the center position of the pulse (i.e. its delay) and <span class="math notranslate nohighlight">\(T\)</span> the pulse width.
 The autocorrelation of this function is a triangular pulse:</p>
 <div class="figure align-center" id="id1">
 <span id="figrect"></span><a class="reference internal image-reference" href="../../_images/rectCorr.svg"><img alt="../../_images/rectCorr.svg" src="../../_images/rectCorr.svg" /></a>
-<p class="caption"><span class="caption-number">Fig. 8 </span><span class="caption-text">Rectangular function and its autocorrelation</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Rectangular function and its autocorrelation</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <p>Now let’s try with a real OOK-modulated signal recorded with the RTL-SDR to illustrate:</p>
+<p><br /></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The full python code for this example is available
-<a class="reference download internal" download="" href="../../_downloads/204028bfee18a31671bef9af69de6c5d/keyfob_iq_ook.zip"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a></p>
+<a class="reference download internal" download="" href="../../_downloads/d336ab97338d37a5f6f2ad16f84e6c87/matchedFilter.zip"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a></p>
 </div>
-<p><br /></p>
 <div class="figure align-center" id="id2">
-<span id="figookmatched"></span><a class="reference internal image-reference" href="../../_images/ookCorr.svg"><img alt="../../_images/ookCorr.svg" src="../../_images/ookCorr.svg" /></a>
-<p class="caption"><span class="caption-number">Fig. 9 </span><span class="caption-text">Matched filtering an OOK signal</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<span id="figook1"></span><a class="reference internal image-reference" href="../../_images/matchedFiltering1.svg"><img alt="../../_images/matchedFiltering1.svg" src="../../_images/matchedFiltering1.svg" /></a>
+<p class="caption"><span class="caption-text">OOK signal</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
-<p><strong>Top graph</strong>: we plot the signal enveloppe (in blue). We can easily distinguish the bit stream
-visually although it is quite noisy. If we decided to slice the signal using 0.5 (amplitude level)
-as the
-decision threshold, it wouldn’t work: there is too much noise, we would end up with
-a lot of glitches. So we define a reference pulse equivalent to one bit (in green),
-and we correlate it with the recorded signal.
-The output is visible as the orange trace: we can see the expected triangular shape,
-and also that the filter has gotten rid of most of the noise. On top of that,
-the peaks of the triangles are located at the middle of a bit, which will be very useful
-for time synchronisation.</p>
-<p><strong>Middle graph</strong>: To show the power of matched filtering, we drown the signal in noise
-to the point where it’s barely recognisable.</p>
-<p><strong>Bottom graph</strong>: we show the correlation output (in orange) between the noisy signal of the middle
-graph and the reference pulse. It’s compared to the correlation output of the
-top graph (in blue). We can see that despite the insanely high amount of noise,
-the correlation obtained from the noisy signal is nearly identical to the one obtained
-from the fairly clean signal shown in the top graph. The output is clean enough that it
-should be easy to recover the data.</p>
+<p>The blue trace represents our signal. While our trained human eye can easily distinguish the individual bits
+we have to admit the trace looks awful. If we decided to slice the signal using 0.5 (amplitude level)
+as the decision threshold, it wouldn’t work. There is too much noise, we would end up with
+a lot of glitches, which is what we see in the orange trace. So we define a reference pulse equivalent to one bit (in green),
+and we correlate it with the recorded signal. This gives us the match-filtered data.</p>
+<div class="figure align-center" id="id3">
+<span id="figook2"></span><a class="reference internal image-reference" href="../../_images/matchedFiltering3.svg"><img alt="../../_images/matchedFiltering3.svg" src="../../_images/matchedFiltering3.svg" /></a>
+<p class="caption"><span class="caption-text">Match-filtered OOK</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+<p>The correlation gives us the expected triangular shape, and has gotten rid of most of the noise. On top of that,
+each peak of a triangle indicates the middle of a bit, which will be very useful
+when using timing error detection techniques. Slicing the output of the correlation now gives us a clean and faithful
+representation of the intended bitstream.</p>
+<p><br /></p>
+<p>To show the power of matched filtering, we can drown the signal in noise
+to the point where it’s barely recognisable:</p>
+<div class="figure align-center" id="id4">
+<span id="figook3"></span><a class="reference internal image-reference" href="../../_images/matchedFiltering2.svg"><img alt="../../_images/matchedFiltering2.svg" src="../../_images/matchedFiltering2.svg" /></a>
+<p class="caption"><span class="caption-text">Noisy signal</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+</div>
+<p>As we can see, the output of the correlation is very similar to the one obtained from the original signal.
+It’s a little bit more noisy and will require further processing to clean-up, but nothing insurmontable.</p>
 </div>
 <div class="section" id="sync-word-detection">
 <h2>Sync Word detection<a class="headerlink" href="#sync-word-detection" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The full python code for this example is available
+<a class="reference download internal" download="" href="../../_downloads/be43b190f65d415f925cb3c9dace6f9d/syncWordDetection.py"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a></p>
+</div>
 <p>In simple protocols used in embedded systems, radio frames are often built this way:</p>
 <p><br /></p>
 <table class="docutils align-default">
@@ -243,7 +259,77 @@ alone when the ‘useful’ message actually starts.</p>
 <p><br /></p>
 <p>That’s where the synchronisation word come in: it’s a specific binary sequence which marks
 the beginning of the radio frame. So once the receiver has identified a preamble and locked onto it,
-it will begin looking for the sync word so it knows where it needs to start decoding the message.</p>
+it will begin looking for the sync word so it knows where it needs to start decoding the message.
+To do so we could scan for the sync word by doing a bit-by-bit comparison with the incoming binary
+stream, but that wouldn’t leave any room for errors. While this works in ideal conditions,
+in the real world the signal will be noisy so some bits might be corrupted.
+By doing a correlation, we can instead estimate a likelyhood that we found the right sequence.</p>
+<p><br /></p>
+<p>For example, let’s say we have the binary sequence:</p>
+<p><br /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+<span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+<span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+<span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+<span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+<span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>and we’re looking for the sync word <strong>0xF9A8</strong>. We correlate our bitstream with the binary sequence
+corresponding to <strong>0xF9A8</strong> and we get:</p>
+<p><br /></p>
+<div class="figure align-center" id="id5">
+<span id="figsynccorr"></span><a class="reference internal image-reference" href="../../_images/syncDetection.svg"><img alt="../../_images/syncDetection.svg" src="../../_images/syncDetection.svg" /></a>
+<p class="caption"><span class="caption-text">Sync word detection by correlation</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</div>
+<p>The red dot indicates the (possible) location of the <strong>center</strong> of the sync word sequence, at
+index 74. Our sync word is 16 bits long, so if we extract the bits from index
+(74-8) to (74+8), we get:</p>
+<p><br /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Which is 0xF9A8. In this simple example, we took the maximum correlation value as the point
+where the correlation is the most likely to have found the sync word;
+however please note this will not always
+be the case and more complex methods of selection might be required.</p>
+</div>
+<div class="section" id="noise-autocorrelation-properties">
+<h2>Noise autocorrelation properties<a class="headerlink" href="#noise-autocorrelation-properties" title="Permalink to this headline">¶</a></h2>
+<p>(AWG or Additive White Gaussian) Noise has very interesting autocorrelation properties. Recall correlation is a measure of how much two signals are similar
+to each other. So if you correlate a signal with itself, what does it measure? It measures a signal’s dependencies
+within itself, in other words repeating patterns, regularities, specific frequency content.</p>
+<p><br /></p>
+<p>But white noise is <strong>supposed to be perfectly random</strong>, i.e no repeating pattern. Therefore, at any point in time,
+noise should produce a zero-output autocorrelation <strong>except</strong> when it’s exactly aligned with itself. Below is an example
+of noise measured with an RTL-SDR on the 868MHz ISM band.</p>
+<p><br /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The full python code for this example is available
+<a class="reference download internal" download="" href="../../_downloads/65ba4bf123f77004ce85c7d600f19d3f/noise.zip"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a></p>
+</div>
+<div class="figure align-center" id="id6">
+<span id="fignoise"></span><a class="reference internal image-reference" href="../../_images/noise.svg"><img alt="../../_images/noise.svg" src="../../_images/noise.svg" /></a>
+<p class="caption"><span class="caption-text">Noise recorded with RTL-SDR on 868MHz ISM band</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+</div>
+<div class="figure align-center" id="id7">
+<span id="fignoisecorr"></span><a class="reference internal image-reference" href="../../_images/noiseAutoCorr.svg"><img alt="../../_images/noiseAutoCorr.svg" src="../../_images/noiseAutoCorr.svg" /></a>
+<p class="caption"><span class="caption-text">Noise autocorrelation</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+</div>
+<p>As we can see on the left-hand side picture, the autocorrelation seems to be 0 except at the center, where the signal
+perfectly aligns with itself during the correlation process. A zoom is performed and displayed on the right-hand side
+picture, along with each sample graphically represented by a dot. We can clearly that a <strong>single</strong> sample presents a
+high energy, while the others are pretty much at 0.</p>
+<p><br /></p>
+<p>Interestingly, this also shows that when we do the assumption that noise is AWGN in order to simplify circuit or system
+analysis, it’s actually very close to reality. This practical example shows that background electromagnetic noise does in fact
+behave like AWGN.</p>
+<p><br /></p>
+<p>This particular behaviour is used in many cases, like sync word detection, where we will try to use codes that
+have strong autocorrelation properties (to produce a high-energy peak) and weak cross-correlation properties
+(to avoid being mistaken for other codes). Some examples are Barker codes used in WiFi or Zadoff-Chu sequences used in
+cellular (4G/5G).</p>
 </div>
 </div>
 

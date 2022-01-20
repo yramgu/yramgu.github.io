@@ -14,16 +14,16 @@ raw IQ samples stream from the baseband chip directly.
 |br|
 
 These dongles cost around 10$, making them available to anyone. The first ones to be used were the DVB-T dongles massively 
-available on websites like eBay. They did have some issues: cheap crystal (i.e. poor frequency stability),
-thermal issues, dodgy connectors, etc. so some companies such as Nooelec and RTL-SDR blog decided to redesign the dongles to make them more
+available on online selling platforms. They did have some issues: cheap crystal (i.e. poor frequency stability),
+thermal issues, dodgy connectors, etc. so some companies decided to redesign the dongles to make them more
 robust with a TCXO instead of a crystal, metal enclosures, Low noise regulators, etc. 
-These ruggedized versions are more expensive (around 20$), 
+These ruggedized versions are more expensive (around 20-30$), 
 but for what we can achieve with that, it's still incredibly cheap. 
 
 |br|
 
 Over the years other types of affordable SDRs were made
-and we now have plenty of choices from 10$ to several thousands with everything in between.     
+and we now have plenty of choices from 10$ to several thousands with everything in between. Here are some examples of RTL-SDR dongles:    
 
 .. _sdrTypes:
 .. figure:: dongles.png
@@ -39,8 +39,8 @@ Architecture and characteristics
 ==================================
 
 The fundamental architecture for most dongles is based on the R820T RFIC from Rafael Micro (`Datasheet <https://rtl-sdr.com/wp-content/uploads/2013/04/R820T_datasheet-Non_R-20111130_unlocked.pdf>`__)
-and the RTL2832U baseband IC from Realtek (`website <https://www.realtek.com/en/products/communications-network-ics/item/rtl2832u>`__)
-:numref:`SDRarchitecture` shows a very simplified synoptic of the way the RTL-SDR operates.
+and the RTL2832U baseband IC from Realtek (`website <https://www.realtek.com/en/products/communications-network-ics/item/rtl2832u>`__).
+The picture below shows a very simplified synoptic of the way the RTL-SDR operates.
 
 .. _SDRarchitecture:
 .. figure:: rtl-architecture.svg
@@ -53,10 +53,10 @@ and the RTL2832U baseband IC from Realtek (`website <https://www.realtek.com/en/
 The R820T tuner has a classic single-ended superheterodyne architecture with an IF frequency of 3.57 MHz.
 It has a variable gain LNA at the input and a variable IF amplifier (VGA) after the IF filter.
 The mixer's gain can also be adjusted in a limited way.
-With most SDR software using the librtsldr driver, the IF amplifier can be set to auto mode 
+With most SDR software using the librtsldr driver, the IF amplifier can be set to auto (variable gain) mode 
 or set to fixed mode, but the IF gain in fixed mode cannot be changed. Similarly the LNA can be set to auto mode
-or fixed mode, and the gain in fixed mode can be set from 0 to 50dB. In reality, this range
-includes (LNA + Mixer) gain without distinction between the two. In recent versions of librtlsdr however,
+or fixed mode, and the gain in fixed mode can be set from 0 to 50dB. In reality, this 50dB range
+includes both (LNA + Mixer) gains without distinction between the two. In recent versions of librtlsdr however,
 it appears LNA, Mixer and VGA gains can now be set independently achieving a combined range of 100dB.
 
 |br|
@@ -66,7 +66,7 @@ of 28.8 MHz. The ADC has a resolution of 8 bits, but an ENOB of ~7 bits. As expl
 about decimation, this resolution can be improved through oversampling and decimation. The sampled
 signal is converted to IQ format and translated to baseband, then the I and Q branches are decimated and the resulting
 samples are made available through a USB bus. The final sampling rate can be chosen from 225 kHz to 
-3.2 MHz; although the stream is known to be unstable (samples can be dropped) above 2.56 MHz.
+3.2 MHz; although the stream is known to be unstable (samples will be dropped) above 2.56 MHz.
 
 |br|
 
@@ -80,15 +80,17 @@ In summary:
 |br|
 
 +------------------------------+---------------------------------------------------+
-| Frequency tuning range       | - 24 - 1766 MHz                                   |
-|                              | - Down to ~DC for direct sampling capable devices |
+| Frequency tuning range       | 24 - 1766 MHz                                     |
+|                              +---------------------------------------------------+
+|                              | Down to ~DC for direct sampling capable devices   |
 +------------------------+-----+---------------------------------------------------+
 | Gain range (LNA + Mixer)     | 0 - 50 dB                                         |
 +------------------------+-----+---------------------------------------------------+
 | R820T IF frequency           | 3.57 MHz                                          |
 +------------------------+-----+---------------------------------------------------+
-| RTL2832 Sampling Rate        | - 225.001 to 300 kHz                              |
-|                              | - 900.001 to 3200.000 kHz                         |
+| RTL2832 Sampling Rate        | 225.001 to 300 kHz                                |
+|                              +---------------------------------------------------+
+|                              | 900.001 to 3200.000 kHz                           |
 +------------------------+-----+---------------------------------------------------+
 | RTL2832 ADC resolution       | 8 bits (~7bits ENOB)                              |
 +------------------------+-----+---------------------------------------------------+

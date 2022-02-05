@@ -1,71 +1,36 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Decimation &mdash; Standing Waves</title>
+      <link rel="stylesheet" href="../pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../my_theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../js/html5shiv.min.js"></script>
+  <![endif]-->
   
-
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  
-  
-    <link rel="stylesheet" href="../css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="Standing Waves" href="../../index.html"/>
-        <link rel="next" title="Correlation" href="../correlation/correlation.html"/>
-        <link rel="prev" title="The RTL-SDR" href="../SDR/rtl-sdr.html"/> 
-
-  
-  <script src="../js/modernizr.min.js"></script>
-
+        <script data-url_root="../../" id="documentation_options" src="../documentation_options.js"></script>
+        <script src="../jquery.js"></script>
+        <script src="../underscore.js"></script>
+        <script src="../doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Correlation" href="../correlation/correlation.html" />
+    <link rel="prev" title="Direct-Sequence Spread Spectrum (DSSS)" href="../DSSS/DSSS.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
+        <div class="wy-side-nav-search" >
             <a href="../../index.html" class="icon icon-home"> Standing Waves
-          
-
-          
-            
-            <img src="../wavepic.png" class="logo" />
-          
+            <img src="../wavepic.png" class="logo" alt="Logo"/>
           </a>
-
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,17 +38,19 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-                <p class="caption"><span class="caption-text">SDR</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">SDR</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../SDR/rtl-sdr.html">RTL-SDR introduction</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modulations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../IQ-modulation/IQ-modulation.html">I/Q modulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../BPSK/BPSK.html">BPSK demodulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../DSSS/DSSS.html">Direct-Sequence Spread Spectrum (DSSS)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DSP tools</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../SDR/rtl-sdr.html">The RTL-SDR</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Decimation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-concept">The concept</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#aliasing-issue">Aliasing issue</a></li>
@@ -93,73 +60,38 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../correlation/correlation.html">Correlation</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Demodulation examples</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../BPSK/BPSK.html">Demodulating a BSPK</a></li>
-</ul>
-<p class="caption"><span class="caption-text">RFU</span></p>
+<p class="caption" role="heading"><span class="caption-text">MISC</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../Others/RFU.html">RFU</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">Standing Waves</a>
-        
       </nav>
 
-
-      
       <div class="wy-nav-content">
         <div class="rst-content">
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html">Home</a> &raquo;</li>
-        
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Decimation</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
-        
       </li>
-    
   </ul>
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="decimation">
-<h1>Decimation<a class="headerlink" href="#decimation" title="Permalink to this headline">¶</a></h1>
+<h1>Decimation<a class="headerlink" href="#decimation" title="Permalink to this headline"></a></h1>
 <div class="section" id="the-concept">
-<h2>The concept<a class="headerlink" href="#the-concept" title="Permalink to this headline">¶</a></h2>
+<h2>The concept<a class="headerlink" href="#the-concept" title="Permalink to this headline"></a></h2>
 <p>Decimation is a process very often used in radio dsp, and consists in
 reducing the bandwidth of a signal. Decimating by a factor D is performed by
 dropping one out of every D sample of a signal. If a signal is sampled at a rate <span class="math notranslate nohighlight">\(Fs\)</span>,
@@ -168,22 +100,21 @@ In reality, it’s a bit trickier than that: the process of simply reducing the 
 downsampling. But if we stop there we might have aliasing issues, so we always low-pass filter
 the signal prior to downsampling and that whole operation is called decimation. It is often
 represented in block diagrams as shown below:</p>
-<p><br /></p>
 <div class="figure align-center" id="id1">
 <span id="decbloc"></span><a class="reference internal image-reference" href="../../_images/decimBlock.svg"><img alt="../../_images/decimBlock.svg" src="../../_images/decimBlock.svg" /></a>
-<p class="caption"><span class="caption-text">Decimation block</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Decimation block</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
 </div>
 </div>
 <div class="section" id="aliasing-issue">
-<h2>Aliasing issue<a class="headerlink" href="#aliasing-issue" title="Permalink to this headline">¶</a></h2>
+<h2>Aliasing issue<a class="headerlink" href="#aliasing-issue" title="Permalink to this headline"></a></h2>
 <p>Say we are sampling at Frequency <span class="math notranslate nohighlight">\(Fs\)</span>: the Nyquist bandwidth will extend from DC to <span class="math notranslate nohighlight">\(\frac{Fs}{2}\)</span>,
-this is known as the Nyquist-Shannon sampling theorem.
+this is known as the <strong>Nyquist-Shannon sampling theorem</strong>.
 This theorem states that in order to sample a signal correctly, the sampling
 frequency must be superior to twice that signal’s bandwidth.
 In our example, there are two signals in the Nyquist bandwidth: our wanted <span class="math notranslate nohighlight">\(W\)</span> and an interferer <span class="math notranslate nohighlight">\(I\)</span>.</p>
 <div class="figure align-center" id="id2">
 <span id="figaliasing"></span><a class="reference internal image-reference" href="../../_images/aliasing.svg"><img alt="../../_images/aliasing.svg" src="../../_images/aliasing.svg" /></a>
-<p class="caption"><span class="caption-text">Aliasing</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Aliasing</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
 </div>
 <p>If we reduce our sampling rate to <span class="math notranslate nohighlight">\(\frac{Fs}{D}\)</span>, our new Nyquist bandwidth now extends from DC to <span class="math notranslate nohighlight">\(\frac{Fs}{2D}\)</span>.
 The Wanted <span class="math notranslate nohighlight">\(W\)</span> is in that bandwidth, so it’s fine. The Interferer <span class="math notranslate nohighlight">\(I\)</span>, however, is now <cite>undersampled</cite>; but it might still be within
@@ -193,32 +124,28 @@ In order to get rid of potential aliases, we must first implement a low-pass fil
 filter) prior to the downsampling operation.</p>
 </div>
 <div class="section" id="an-example">
-<h2>An example<a class="headerlink" href="#an-example" title="Permalink to this headline">¶</a></h2>
+<h2>An example<a class="headerlink" href="#an-example" title="Permalink to this headline"></a></h2>
 <p>As an example, we generate two tones sampled at a rate of 10 kHz:
 One tone at 100 Hz and another tone at 700 Hz. The time-domain representation of that signal is given in Plot 1
 and its power spectrum is given in Plot 2. In this case, the Nyquist bandwidth extends from 0 to 5 kHz.</p>
-<p><br /></p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The full python code for this example is available
-<a class="reference download internal" download="" href="../../_downloads/a73be0e3addb70b961687570736d2be3/aliasing.py"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a></p>
+<div class="pythoncode admonition">
+<p class="admonition-title">The full python code for this example is available</p>
+<p><a class="reference download internal" download="" href="../../_downloads/d33885603ab0c1424b9830a39d5967bf/aliasing.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">here</span></code></a></p>
 </div>
 <div class="figure align-center" id="id3">
 <span id="figaliasexperiment"></span><a class="reference internal image-reference" href="../../_images/aliasing_python.svg"><img alt="../../_images/aliasing_python.svg" src="../../_images/aliasing_python.svg" /></a>
-<p class="caption"><span class="caption-text">Aliasing python experiment</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Aliasing python experiment</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
 </div>
 <p>Then we downsample that signal by dropping 1 out of 10 samples. The new sampling rate becomes 1 kHz
 and the nyquist bandwidth is reduced to 500 Hz, which should leave us only with the 100 Hz tone.
 The resulting power spectrum is shown on plot 3.</p>
-<p><br /></p>
 <p>We can see our 100 Hz tone, but we now have an uninvited guest showing up at 300 Hz, and that tone shouldn’t exist.
 Now that our Nyquist bandwidth ranges from 0 to 500 Hz (1st Nyquist zone), the 2nd Nyquist zone ranges
 from 500 Hz to 1000 Hz and so on. The 700 Hz tone is in the 2nd Nyquist zone; and every even Nyquist zone will fold back
-reversed onto the 1st one. Thus our 700Hz tone is now showing up on 1000-700 = 300 Hz:</p>
-<p><br /></p>
+flipped onto the 1st one. Thus our 700Hz tone is now showing up on 1000-700 = 300 Hz:</p>
 <div class="figure align-center" id="id4">
 <span id="figaliasfolding"></span><a class="reference internal image-reference" href="../../_images/aliasFold.svg"><img alt="../../_images/aliasFold.svg" src="../../_images/aliasFold.svg" /></a>
-<p class="caption"><span class="caption-text">Folding mechanism</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Folding mechanism</span><a class="headerlink" href="#id4" title="Permalink to this image"></a></p>
 </div>
 <p>So we implement a low-pass filter first to eliminate the unwanted tone at 700 Hz, then we downsample and the
 result can be seen in Plot 4, where the 300 Hz alias has disappeared. In Python the decimation
@@ -228,7 +155,7 @@ operation can be done automatically using a dedicated function from Scipy:</p>
 </div>
 </div>
 <div class="section" id="snr-improvement">
-<h2>SNR improvement<a class="headerlink" href="#snr-improvement" title="Permalink to this headline">¶</a></h2>
+<h2>SNR improvement<a class="headerlink" href="#snr-improvement" title="Permalink to this headline"></a></h2>
 <p>Decimation will also improve the Signal-to-Noise Ratio (SNR): indeed, as we are reducing
 the bandwidth, we are reducing the noise. This type of improvement is called a processing gain,
 and its value in dB can be calculated by the formula:</p>
@@ -239,24 +166,23 @@ signal was sampled at 2 MHz then decimated by 10 to 200 kHz. We can clearly see 
 on the IQ traces.</p>
 <div class="figure align-center" id="id5">
 <span id="figdeciq"></span><a class="reference internal image-reference" href="../../_images/IQ_decimated.PNG"><img alt="../../_images/IQ_decimated.PNG" src="../../_images/IQ_decimated.PNG" style="width: 1260.0px; height: 302.0px;" /></a>
-<p class="caption"><span class="caption-text">RTL-SDR decimated IQ</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">RTL-SDR decimated IQ</span><a class="headerlink" href="#id5" title="Permalink to this image"></a></p>
 </div>
 <p>The SNR improvement is <span class="math notranslate nohighlight">\(10log_{10} \left(\frac{2M}{200k}\right) = 10dB\)</span>. So just like that, we’ve reduced our noise
 by 10dB. Additionally, since we now have 10x less samples, it will result in a decreased processing load for
 whatever step comes next.</p>
-<p><br /></p>
-<dl class="simple">
-<dt>But then we might ask ourselves: <strong>why go through all this trouble</strong>?</dt><dd><ul class="simple">
+<div class="admonition-but-then-we-might-ask-ourselves admonition">
+<p class="admonition-title">But then we might ask ourselves…</p>
+<p><strong>Why go through all this trouble</strong>?</p>
+</div>
+<ul class="simple">
 <li><p>Since we’re using an SDR, why don’t we just set the SDR to sample at 200ksps directly instead of oversampling at 2Msps then decimating?</p></li>
-<li><p>Sampling at a higher frequency means bringing in more noise anyway since the bandwidth is higher so what’s the point?</p></li>
+<li><p>Wouldn’t sampling at a higher frequency bring in more noise anyway since the bandwidth is higher?</p></li>
 </ul>
-</dd>
-</dl>
 <p>For starters, a trivial advantage to oversampling followed by decimation is the ability to get
 rid of close-range interferers (assuming the ones that are further away are being filtered by the hardware).
 Another less obvious advantage concerns the ADC inside the RTL2832 that samples our incoming signal.
 As it turns out, <strong>sampling at a higher frequency doesn’t mean bringing in more noise</strong>.</p>
-<p><br /></p>
 <p>Let’s consider a perfect ADC/system, which is only affected by quantization noise. If <span class="math notranslate nohighlight">\(q\)</span> is the ADC’s LSB,
 then the total noise power due to quantization noise for a perfect ADC is</p>
 <div class="math notranslate nohighlight">
@@ -267,84 +193,46 @@ to have flat spectrum, and knowing that spectrum is band-limited by the sampling
 represent it as:</p>
 <div class="figure align-center" id="id6">
 <span id="figadcnoise"></span><a class="reference internal image-reference" href="../../_images/PSDnoise.svg"><img alt="../../_images/PSDnoise.svg" src="../../_images/PSDnoise.svg" /></a>
-<p class="caption"><span class="caption-text">Perfect ADC quantization noise Power Spectral Density</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Perfect ADC quantization noise Power Spectral Density</span><a class="headerlink" href="#id6" title="Permalink to this image"></a></p>
 </div>
 <p>The Power Spectral Density (PSD) of that quantization noise can then be expressed as</p>
 <div class="math notranslate nohighlight">
 \[PSD_{noise} = \frac{q^2}{12} \frac{1}{Fs}\]</div>
-<p>Since the total noise power is constant it becomes clear that increasing the sampling frequency
-spreads the noise, so given the chance
-it’s quite often (but not always) better to oversample first and then downsample.</p>
+<p>Since the total noise power is constant it becomes clear that <strong>increasing the sampling frequency
+spreads the noise</strong>, so given the chance
+it’s quite often (but not always) better to oversample first and then decimate.</p>
 </div>
 </div>
 
 
            </div>
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-
-      
-      
-
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../DSSS/DSSS.html" class="btn btn-neutral float-left" title="Direct-Sequence Spread Spectrum (DSSS)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../correlation/correlation.html" class="btn btn-neutral float-right" title="Correlation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2021, Yannish Ramgulam.
-
-    </p>
+    <p>&#169; Copyright 2022, Yannish Ramgulam.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE: 'true'
-        };
-    </script>
-      <script type="text/javascript" src="../jquery.js"></script>
-      <script type="text/javascript" src="../underscore.js"></script>
-      <script type="text/javascript" src="../doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../js/theme.js"></script>
-  
-
-  
-  
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

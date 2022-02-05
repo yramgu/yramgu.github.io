@@ -1,0 +1,11 @@
+.wy-nav-content {
+    max-width: none;
+    }
+
+.rst-content .pythoncode .admonition-title {
+    background: #4b8bbE
+    }
+    
+.rst-content .pythoncode {
+    background: #fff3b7
+    }

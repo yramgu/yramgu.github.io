@@ -21,7 +21,26 @@ What will you find here?
 
 This website is a collection of articles related to practical radio engineering, focused on SDR 
 and simple experiments I made using Python. It's not meant to provide mathematical rigour, but rather
-illustrate concepts in a pratical way.
+illustrate concepts in a pratical way. All the scripts are provided so that you can run them at home
+yourself.
+
+
+Licenses
+========================
+
+.. raw:: html
+
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" 
+    src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />The content of this website is licensed under a <a rel="license" 
+    href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+
+.. _python-logo:
+.. figure:: _static/home/python-logo-master.png
+    :scale: 30%
+
+Python code packages available for download are under the `MIT license <https://opensource.org/licenses/MIT>`__.
+
+
 
 .. toctree::
     :maxdepth: 1
@@ -29,20 +48,28 @@ illustrate concepts in a pratical way.
     :caption: SDR
     
     ./_static/SDR/rtl-sdr
+
+.. toctree::
+    :maxdepth: 1
+    :hidden:
+    :caption: Modulations
+
+    ./_static/IQ-modulation/IQ-modulation
+    ./_static/BPSK/BPSK
+    ./_static/DSSS/DSSS
+
+.. toctree::
+    :maxdepth: 1
+    :hidden:
+    :caption: DSP tools
+
     ./_static/decimation/decimation
     ./_static/correlation/correlation
 
 .. toctree::
     :maxdepth: 1
     :hidden:
-    :caption: Demodulation examples
-
-    ./_static/BPSK/BPSK
-
-.. toctree::
-    :maxdepth: 1
-    :hidden:
-    :caption: RFU
+    :caption: MISC
 
     ./_static/Others/RFU
 

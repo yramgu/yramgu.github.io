@@ -1,71 +1,36 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BPSK demodulation &mdash; Standing Waves</title>
+      <link rel="stylesheet" href="../pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../my_theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../js/html5shiv.min.js"></script>
+  <![endif]-->
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Demodulating a BSPK &mdash; Standing Waves</title>
-  
-
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  
-  
-    <link rel="stylesheet" href="../css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="Standing Waves" href="../../index.html"/>
-        <link rel="next" title="RFU" href="../Others/RFU.html"/>
-        <link rel="prev" title="Correlation" href="../correlation/correlation.html"/> 
-
-  
-  <script src="../js/modernizr.min.js"></script>
-
+        <script data-url_root="../../" id="documentation_options" src="../documentation_options.js"></script>
+        <script src="../jquery.js"></script>
+        <script src="../underscore.js"></script>
+        <script src="../doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Direct-Sequence Spread Spectrum (DSSS)" href="../DSSS/DSSS.html" />
+    <link rel="prev" title="I/Q modulation" href="../IQ-modulation/IQ-modulation.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
+        <div class="wy-side-nav-search" >
             <a href="../../index.html" class="icon icon-home"> Standing Waves
-          
-
-          
-            
-            <img src="../wavepic.png" class="logo" />
-          
+            <img src="../wavepic.png" class="logo" alt="Logo"/>
           </a>
-
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,163 +38,464 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-                <p class="caption"><span class="caption-text">SDR</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">SDR</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../SDR/rtl-sdr.html">The RTL-SDR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../SDR/rtl-sdr.html">RTL-SDR introduction</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modulations</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../IQ-modulation/IQ-modulation.html">I/Q modulation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">BPSK demodulation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#bpsk-crash-course">BPSK crash-course</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bpsk-demodulation-example">BPSK demodulation example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#open-the-wav-file-and-inspect">Open the WAV file and inspect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#coarse-frequency-correction">Coarse frequency correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fine-frequency-correction-the-costas-loop">Fine frequency correction: the Costas loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#timing-recovery">Timing recovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#decode-the-payload">Decode the payload</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#crc">CRC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../DSSS/DSSS.html">Direct-Sequence Spread Spectrum (DSSS)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DSP tools</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../decimation/decimation.html">Decimation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../correlation/correlation.html">Correlation</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Demodulation examples</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Demodulating a BSPK</a></li>
-</ul>
-<p class="caption"><span class="caption-text">RFU</span></p>
+<p class="caption" role="heading"><span class="caption-text">MISC</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../Others/RFU.html">RFU</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">Standing Waves</a>
-        
       </nav>
 
-
-      
       <div class="wy-nav-content">
         <div class="rst-content">
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html">Home</a> &raquo;</li>
-        
-      <li>Demodulating a BSPK</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>BPSK demodulation</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
-        
       </li>
-    
   </ul>
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="demodulating-a-bspk">
-<h1>Demodulating a BSPK<a class="headerlink" href="#demodulating-a-bspk" title="Permalink to this headline">¶</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Article under construction</p>
+             
+  <div class="section" id="bpsk-demodulation">
+<h1>BPSK demodulation<a class="headerlink" href="#bpsk-demodulation" title="Permalink to this headline"></a></h1>
+<p>This page will walk you through all the steps to demodulate a BPSK waveform using Python.</p>
+<div class="section" id="bpsk-crash-course">
+<h2>BPSK crash-course<a class="headerlink" href="#bpsk-crash-course" title="Permalink to this headline"></a></h2>
+<p>The BPSK modulation is a very simple, yet very robust modulation. BPSK stands for “Binary Phase Shift Keying”.
+It simply consists of alternating a carrier phase between <span class="math notranslate nohighlight">\(0\)</span> and <span class="math notranslate nohighlight">\(\pi\)</span> radian depending on whether were are transmitting a ‘1’ or a ‘0’.
+Mathematically speaking, a bpsk-modulated carrier can be expressed by</p>
+<div class="math notranslate nohighlight">
+\[s(t) = Acos(2 \pi f_c t + \theta_0 + \theta_m)\]</div>
+<p>where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(A =\)</span> signal amplitude</p></li>
+<li><p><span class="math notranslate nohighlight">\(fc =\)</span> carrier frequency</p></li>
+<li><p><span class="math notranslate nohighlight">\(\theta_0 =\)</span> initial phase offset</p></li>
+<li><p><span class="math notranslate nohighlight">\(\theta_m \in \{0, \pi\}\)</span> = phase modulation</p></li>
+</ul>
+<p>The time-domain waveform is displayed below. Everytime we change bit, the carrier wave
+is reversed, which is what a phase change from <span class="math notranslate nohighlight">\(0\)</span> to <span class="math notranslate nohighlight">\(\pi\)</span> (or vice-versa) does.</p>
+<div class="figure align-center" id="id13">
+<span id="bpsk-ideal-constellation"></span><img alt="../../_images/bpsk_ideal_constellation.svg" src="../../_images/bpsk_ideal_constellation.svg" /><p class="caption"><span class="caption-text">BPSK representation</span><a class="headerlink" href="#id13" title="Permalink to this image"></a></p>
 </div>
+<p>Since we have two phase states <span class="math notranslate nohighlight">\(0\)</span> and <span class="math notranslate nohighlight">\(\pi\)</span>, the <span class="math notranslate nohighlight">\(I/Q\)</span> constellation has two symbols
+with amplitude +/-1 positionned on the <span class="math notranslate nohighlight">\(I\)</span> (in-phase) axis. The <span class="math notranslate nohighlight">\(Q\)</span> (quadrature) component
+is null. When we transition from one symbol to the other, we travel <strong>through the center</strong> of the unit circle.
+This produces nulls in the signal enveloppe at each transition. The example below shows a BPSK IQ waveform
+(filtered by a gaussian filter) and resulting enveloppe where we can see the nulls at each symbol transition:</p>
+<div class="figure align-center" id="id14">
+<span id="bpsk-ideal-iq"></span><img alt="../../_images/bpsk-ideal-iq.svg" src="../../_images/bpsk-ideal-iq.svg" /><p class="caption"><span class="caption-text">BPSK IQ exemple and resulting enveloppe</span><a class="headerlink" href="#id14" title="Permalink to this image"></a></p>
+</div>
+<p>The BPSK Bit-Error-Rate (BER) is given by <a class="footnote-reference brackets" href="#id7" id="id1">1</a>:</p>
+<div class="math notranslate nohighlight">
+\[BER = \frac{1}{2}erfc\Biggl(\sqrt{\frac{E_b}{N_0}}\Biggl)\]</div>
+<p>with</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(E_b =\)</span> bit energy</p></li>
+<li><p><span class="math notranslate nohighlight">\(N_0 =\)</span> noise spectral density (Noise power in 1Hz bandwidth)</p></li>
+</ul>
+<p>from this we can plot the BER as a function of SNR:</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>missing image</p>
+</div>
+<p>This plot shows us that for a typical BER value of <span class="math notranslate nohighlight">\(10^{-3}\)</span> we need an SNR of ~6/7dB.</p>
+</div>
+<div class="section" id="bpsk-demodulation-example">
+<h2>BPSK demodulation example<a class="headerlink" href="#bpsk-demodulation-example" title="Permalink to this headline"></a></h2>
+<div class="pythoncode admonition">
+<p class="admonition-title">The full python code for this example is available</p>
+<p><a class="reference download internal" download="" href="../../_downloads/834315caf7680138470ec1641349c5e9/bpsk-demod.zip"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">here</span></code></a></p>
+<p>Validated with: Python 3.6.7 - Numpy 1.19.4 - Scipy 1.5.4 - Matplotlib 3.3.3</p>
+</div>
+<p>For this exercise, we will work with a BPSK waveform with the following characteristics:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 67%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>File name</p></td>
+<td><p>bpsk_waveform.wav</p></td>
+</tr>
+<tr class="row-even"><td><p>Sampling rate</p></td>
+<td><p>100 kHz</p></td>
+</tr>
+<tr class="row-odd"><td><p>Baudrate</p></td>
+<td><p>100 bps</p></td>
+</tr>
+<tr class="row-even"><td><p>Encoding</p></td>
+<td><p>Differential (‘1’ = keep phase)</p></td>
+</tr>
+<tr class="row-odd"><td><p>CRC polynomial</p></td>
+<td><p><span class="math notranslate nohighlight">\(X^{16} + X^{12} + X^5 + 1\)</span></p></td>
+</tr>
+</tbody>
+</table>
+<p>The message has the following structure:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 27%" />
+<col style="width: 26%" />
+<col style="width: 19%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Preamble</strong>: 0xAAAAAA</p></td>
+<td><p><strong>Sync Word</strong>: 0xF9A8</p></td>
+<td><p><strong>Payload</strong>: 8 bytes</p></td>
+<td><p><strong>CRC</strong>: CRC16</p></td>
+</tr>
+</tbody>
+</table>
+<p>The goal, of course, is to decode the payload.</p>
+</div>
+<div class="section" id="open-the-wav-file-and-inspect">
+<h2>Open the WAV file and inspect<a class="headerlink" href="#open-the-wav-file-and-inspect" title="Permalink to this headline"></a></h2>
+<p>We open the WAV file and plot the IQ data and FFT:</p>
+<div class="figure align-center" id="id15">
+<span id="bpsk-iq-fft"></span><img alt="../../_images/bpsk_iq_fft.svg" src="../../_images/bpsk_iq_fft.svg" /><p class="caption"><span class="caption-text">IQ data and FFT</span><a class="headerlink" href="#id15" title="Permalink to this image"></a></p>
+</div>
+<p>The IQ data looks very different to the one shown in the crash-course section: it looks much more “dense”, and the quadrature
+path is not zero. This is easily explained by the FFT: a baseband signal should be centered around DC. Here however, the signal is offset by +12kHz.
+Therefore our bpsk signal is “riding” on a 12kHz carrier. That’s why the quadrature path is not zero, and why the
+IQ data looks so dense: zooming in shows us the 12 kHz carrier with ~83ms period.</p>
+<div class="figure align-center" id="id16">
+<span id="bpsk-iq-12k-zoom"></span><img alt="../../_images/bpsk_iq_12k_zoom.svg" src="../../_images/bpsk_iq_12k_zoom.svg" /><p class="caption"><span class="caption-text">IQ data zoom</span><a class="headerlink" href="#id16" title="Permalink to this image"></a></p>
+</div>
+</div>
+<div class="section" id="coarse-frequency-correction">
+<h2>Coarse frequency correction<a class="headerlink" href="#coarse-frequency-correction" title="Permalink to this headline"></a></h2>
+<p>First, we want to bring our signal back closer to DC. There are multiple ways of doing this, more or less complex,
+but we’ll choose an easy path. Since we have the FFT (and no visible interferer), we can just take the highest
+peak in the FFT (which will be located in our signal of interest), call that our “Coarse frequency offset” and rotate the signal back to DC.</p>
+<p>How do we rotate? That’s very easy: we multiply by a complex exponential. Recall from trigonometry that</p>
+<div class="math notranslate nohighlight">
+\[A[ cos(2 \pi f_c t) + jsin(2 \pi f_c t) ] = Ae^{2 \pi f_c t}\]</div>
+<p>This is called a phasor, which is represented in the complex plane by a rotating vector of amplitude <span class="math notranslate nohighlight">\(A\)</span>.
+Let’s consider a phasor <span class="math notranslate nohighlight">\(p\)</span> at frequency <span class="math notranslate nohighlight">\(f_0\)</span> given by <span class="math notranslate nohighlight">\(e^{2 \pi f_0 t}\)</span>. We want to translate it
+by another frequency <span class="math notranslate nohighlight">\(f_1\)</span> to the left so we do</p>
+<div class="math notranslate nohighlight">
+\[p(t) = e^{2 \pi (f_0 - f_1) t} = e^{(2 \pi f_0 t) - (2 \pi f_1 t)} = e^{2 \pi f_0 t} *  e^{- 2 \pi f_1 t}\]</div>
+<p>If we apply this to our BPSK waveform, we multiply it by an exponential with frequency -12kHz and we get our spectrum shifted near DC:</p>
+<div class="figure align-center" id="id17">
+<span id="bpsk-rotated-iq-fft"></span><img alt="../../_images/bpsk_rotated_iq_fft.svg" src="../../_images/bpsk_rotated_iq_fft.svg" /><p class="caption"><span class="caption-text">rotated waveform</span><a class="headerlink" href="#id17" title="Permalink to this image"></a></p>
+</div>
+<p>The IQ waveforms look better, however still different from the ideal one shown in the crash-course section,
+and we still have a quadrature component. This means two things:</p>
+<ul class="simple">
+<li><p>The constellation has a (static) phase offset</p></li>
+<li><p>There is a residual frequency offset</p></li>
+</ul>
+</div>
+<div class="section" id="fine-frequency-correction-the-costas-loop">
+<h2>Fine frequency correction: the Costas loop<a class="headerlink" href="#fine-frequency-correction-the-costas-loop" title="Permalink to this headline"></a></h2>
+<p>The costas loop is the most central piece. A costas loop is a quadrature PLL designed for carrier phase recovery, invented by
+John Costas in 1956 <a class="footnote-reference brackets" href="#id8" id="id2">2</a>.
+After coarse frequency offset correction, the Costas loop will take care of any remaining frequency offset, and will also eliminate any
+static phase offset. It is often used to demodulate BPSKs or QPSKs, as the baseband data can be directly extracted from the loop.
+The block diagram of a costas loop for BPSK demodulation is:</p>
+<div class="figure align-center" id="id18">
+<span id="bpsk-costas-diagram"></span><img alt="../../_images/bpsk-costas-diagram.svg" src="../../_images/bpsk-costas-diagram.svg" /><p class="caption"><span class="caption-text">Costas loop diagram</span><a class="headerlink" href="#id18" title="Permalink to this image"></a></p>
+</div>
+<p>Let’s do some basic math analysis:</p>
+<p>Our input signal is the received signal <span class="math notranslate nohighlight">\(r(t) = m_{bb}(t)cos(\omega_0t + \theta)\)</span>, with</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(m_{bb}(t)\)</span> the BPSK symbols (+/-1)</p></li>
+<li><p><span class="math notranslate nohighlight">\(cos(\omega_0t + \theta)\)</span> the carrier wave of frequency <span class="math notranslate nohighlight">\(\omega_0\)</span> and phase offset <span class="math notranslate nohighlight">\(\theta\)</span></p></li>
+</ul>
+<p>The input signal goes into a quadrature mixer. On the <span class="math notranslate nohighlight">\(I\)</span> arm we have:</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Use the trigonometric identity: <span class="math notranslate nohighlight">\(cos(\alpha).cos(\beta) = 0.5\Bigl[cos(\alpha + \beta) + cos(\alpha - \beta)\Bigl]\)</span></p>
+</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    x_I(t)&amp; = m_{bb}(t).cos(\omega_0t + \theta).2cos(\omega_0t + \phi) \\
+           &amp;= m_{bb}(t).\Bigl[cos(\theta - \phi) + cos(2 \omega_0 t + \theta + \phi)\Bigl]
+\end{align}\end{split}\]</div>
+<p>The double frequency term is eliminated by the low-pass filter and we are left with</p>
+<div class="math notranslate nohighlight">
+\[x_{LPI}(t) = m_{bb}(t)cos(\theta - \phi)\]</div>
+<p>Likewise on the <span class="math notranslate nohighlight">\(Q\)</span> arm we have:</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Use the trigonometric identity: <span class="math notranslate nohighlight">\(cos(\alpha).sin(\beta) = 0.5\Bigl[sin(\alpha + \beta) - sin(\alpha - \beta)\Bigl]\)</span></p>
+</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    x_I(t)&amp; = m_{bb}(t).cos(\omega_0t + \theta).-2sin(\omega_0t + \phi) \\
+          &amp; = m_{bb}(t).\Bigl[sin(\theta - \phi) - sin(2 \omega_0 t + \theta + \phi)\Bigl]
+\end{align}\end{split}\]</div>
+<p>The double frequency term is eliminated by the low-pass filter and we are left with</p>
+<div class="math notranslate nohighlight">
+\[x_{LPQ}(t) = m_{bb}(t)sin(\theta - \phi)\]</div>
+<p>Then we multiply the I and Q branch together so we get:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    x_{LF}(t) &amp;= m_{bb}^2(t)cos(\theta - \phi)sin(\theta - \phi) \\
+              &amp;= m_{bb}^2(t)sin(2(\theta-\phi))
+\end{align}\end{split}\]</div>
+<p>For a BPSK, <span class="math notranslate nohighlight">\(m_{bb}^2(t) = 1\)</span>, so we end up up with <span class="math notranslate nohighlight">\(x_{LF}(t) = sin(2(\theta-\phi))\)</span>. The error
+has a sinusoidal shape and the loop will settle (just like with a classic PLL) in the linear region around <span class="math notranslate nohighlight">\(\theta-\phi \approx 0°\)</span>. For small angles
+we know that <span class="math notranslate nohighlight">\(sin(\theta) \approx \theta\)</span> therefore the error signal becomes <span class="math notranslate nohighlight">\(2(\theta-\phi)\)</span>.</p>
+<p>The loop filter is usually a proportional-integral (PI) structure. For dimensioning the PI and more generally the loop, we can consider
+the loop to behave exactly like a classic PLL. The figure below represents a 2nd order complex PLL, in the digital domain:</p>
+<div class="figure align-center" id="id19">
+<span id="bpsk-pll"></span><img alt="../../_images/bpsk-pll.svg" src="../../_images/bpsk-pll.svg" /><p class="caption"><span class="caption-text">2nd order PLL</span><a class="headerlink" href="#id19" title="Permalink to this image"></a></p>
+</div>
+<p>The digital PLL’s behaviour depends on three parameters <a class="footnote-reference brackets" href="#id9" id="id3">3</a> <a class="footnote-reference brackets" href="#id10" id="id4">4</a>:</p>
+<ul>
+<li><dl class="simple">
+<dt>The damping factor <span class="math notranslate nohighlight">\(\zeta\)</span></dt><dd><p>The typical value of 0.707 is suitable for the vast majority of cases</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>The sampling frequency <span class="math notranslate nohighlight">\(F_s\)</span></dt><dd><p>Sampling frequency of the system in Hz</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>The equivalent Noise bandwidth <span class="math notranslate nohighlight">\(B_n\)</span></dt><dd><p>Loop bandwidth in Hz</p>
+<p><span class="math notranslate nohighlight">\(B_n\)</span> is related to <span class="math notranslate nohighlight">\(\zeta\)</span> and the natural frequency of the loop <span class="math notranslate nohighlight">\(\omega_n\)</span> by
+<span class="math notranslate nohighlight">\(B_n = \frac{\omega_n}{2} \Bigl(\zeta + \frac{1}{4\zeta}\Bigl)\)</span></p>
+<p><span class="math notranslate nohighlight">\(B_n\)</span> is however often simply chosen in function of <span class="math notranslate nohighlight">\(F_s\)</span>, as a value between 1% and 5% of <span class="math notranslate nohighlight">\(F_s\)</span></p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>The proportional and integral gains <span class="math notranslate nohighlight">\(K_p\)</span> and <span class="math notranslate nohighlight">\(K_I\)</span> of the loop filter are then approximated by:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    K_p &amp;\approx \frac{1}{K_D K_0}.\frac{4\zeta}{\zeta + \frac{1}{4\zeta}}.\frac{B_n}{F_s} \\
+    K_I &amp;\approx \frac{1}{K_D K_0}.\Biggl(\frac{4}{\zeta + \frac{1}{4\zeta}}\Biggl)^2.\Biggl(\frac{B_n}{F_s}\Biggl)^2
+\end{align}\end{split}\]</div>
+<p>with</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(K_0\)</span> the NCO gain, that can simply be set to 1</p></li>
+<li><p><span class="math notranslate nohighlight">\(K_D\)</span> the phase detector gain, that depends on the PLL structure (typically 0.5 or 1)</p></li>
+</ul>
+<p>In our exemple, we set <span class="math notranslate nohighlight">\(K_0 = K_D = 1\)</span>, <span class="math notranslate nohighlight">\(\zeta=0.707\)</span>, <span class="math notranslate nohighlight">\(B_n=1\%(F_s)\)</span>, and <span class="math notranslate nohighlight">\(F_s=100ksps\)</span> (from our WAV file).
+This gives us <span class="math notranslate nohighlight">\(K_p = 0.026664\)</span> and <span class="math notranslate nohighlight">\(K_I = 0.000355\)</span>. We run the loop and we extract <span class="math notranslate nohighlight">\(x_{LPI}(t)\)</span>
+and <span class="math notranslate nohighlight">\(x_{LPQ}(t)\)</span>:</p>
+<div class="figure align-center" id="id20">
+<span id="bpsk-costas-output"></span><img alt="../../_images/bpsk-costas-output.svg" src="../../_images/bpsk-costas-output.svg" /><p class="caption"><span class="caption-text">Costas loop output</span><a class="headerlink" href="#id20" title="Permalink to this image"></a></p>
+</div>
+<p>Now we’re getting somewhere! The loop has locked very quickly and has eliminated any phase or frequency offset.
+The in-phase branch now looks like a BPSK modulating signal, and the quadrature branch has been cancelled out.</p>
+<p>This is good. We can visually see our bits; however we won’t extract them manually, we want Python to do the work for us.
+But how can the program know when to sample a bit? Remember our baseband signal has a bitrate of 100bps,
+but our sampling frequency is 100kHz! That’s 1000 samples per bit! Fortunately, algorithms exist that will
+do this for us, and this is our next step.</p>
+</div>
+<div class="section" id="timing-recovery">
+<h2>Timing recovery<a class="headerlink" href="#timing-recovery" title="Permalink to this headline"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The full python code for this example is available
-<code class="xref download docutils literal notranslate"><span class="pre">here</span></code></p>
+<p>This step is usually done earlier, before the Costas loop; but for the purpose of this article and illustration
+I thought it was more relevant to do it here</p>
+</div>
+<p>In order to know when to sample our symbols, we need a timing recovery mechanism. This is done with a Time Locked Loop (or TLL)
+using a Timing Error Detector (TED) algorithm:</p>
+<div class="figure align-center" id="id21">
+<span id="bpsk-tll"></span><img alt="../../_images/bpsk-tll.svg" src="../../_images/bpsk-tll.svg" /><p class="caption"><span class="caption-text">Time Locked Loop</span><a class="headerlink" href="#id21" title="Permalink to this image"></a></p>
+</div>
+<p>The most interesting part here is the TED. There are plenty of different algorithms, and for this article I chose a very
+simple one particularly suited to BPSK: the Gardner TED <a class="footnote-reference brackets" href="#id11" id="id5">5</a>. The Gardner TED is part of a family of so-called
+“Early-Late” algorithms. The concept is fairly simple:</p>
+<div class="figure align-center" id="id22">
+<span id="bpsk-gardner"></span><img alt="../../_images/bpsk-gardner.svg" src="../../_images/bpsk-gardner.svg" /><p class="caption"><span class="caption-text">Gardner alorithm illustration</span><a class="headerlink" href="#id22" title="Permalink to this image"></a></p>
+</div>
+<p>The Gardner equation giving the timing error is:</p>
+<div class="math notranslate nohighlight">
+\[e[n] = \biggl(r\Bigl[nT_M + \varepsilon\Bigl] - r\Bigl[(n-1)T_M + \varepsilon\Bigl]\biggl) \times r\Bigl[nT_M - \frac{T_M}{2} + \varepsilon\Bigl]\]</div>
+<p>We note the symbol period <span class="math notranslate nohighlight">\(T_M\)</span>. The algorithm will evaluate a symbol at time <span class="math notranslate nohighlight">\(nT_M\)</span> and
+the preceding one at time <span class="math notranslate nohighlight">\((n-1)T_M\)</span> (the two red dots), take the difference and multiply by the middle point at
+time <span class="math notranslate nohighlight">\(T_M(n-\frac{1}{2})\)</span> (orange dot).</p>
+<p>In the illustration above, we have:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\((a) \quad e[nT_M] = (-0.8-0.8) \times (+0.2) = -0.32\)</span>: A timing advance yields a negative error</p></li>
+<li><p><span class="math notranslate nohighlight">\((b) \quad e[nT_M] = (-0.8-0.8) \times (-0.2) = +0.32\)</span>: A timing delay yields a positive error</p></li>
+<li><p><span class="math notranslate nohighlight">\((c) \quad e[nT_M] = (-1-1) \times 0 = 0\)</span>: A perfect timing yields zero error</p></li>
+</ul>
+<p>What we want is to sample the symbols at the right time, so in order to do that we need to add an error term
+<span class="math notranslate nohighlight">\(\varepsilon\)</span> to the sampling instant. It becomes obvious that in order to do this the signal needs
+to be interpolated/oversampled. This algorithm can’t function if our input signal comes at a rate of 1 sample/symbol.
+We need to oversample so that if we are sampling too early, we can adjust <span class="math notranslate nohighlight">\(\varepsilon\)</span> to sample slightly
+later at the next iteration (and vice-versa if we were sampling too late). In our example we have 1000 samples/symbol
+which is way more than required (I would recommend 10 samples/symbol or more).</p>
+<p>At each iteration the TED needs to go through a control loop in order to make the error converge to 0.
+Similar to the PLL, the loop filter is quite a often a proportional-integral (PI) filter. In this example
+I simplified it to a mere proportional (P) gain <span class="math notranslate nohighlight">\(K_p\)</span>, which actually works quite well.</p>
+<p>The gain <span class="math notranslate nohighlight">\(K_p\)</span> was deliberately set to a poor value in order to degrade the performance of the loop and
+see how it converges:</p>
+<div class="figure align-center" id="id23">
+<span id="bpsk-ted"></span><img alt="../../_images/bpsk-ted.svg" src="../../_images/bpsk-ted.svg" /><p class="caption"><span class="caption-text">Output of the TLL</span><a class="headerlink" href="#id23" title="Permalink to this image"></a></p>
+</div>
+<p>The red dots indicate the sampling instants of the TLL. At the beginning the TLL is
+not sampling at the right time and is slowly converging to a lock state, which it reaches at about 200ms. The
+right-hand side picture shows us a zoom between 300ms and 450ms, where we can see that the symbols are sampled
+exactly where they should be. As an exercice you can modify the TLL <span class="math notranslate nohighlight">\(K_p\)</span> in the code to improve the performance.</p>
+<p>Now that we know where to sample our symbols, we can synchronise. The figure below shows us the constellation
+before the TLL (left) and after the TLL (right). The few samples that are not located at +/1 on the <span class="math notranslate nohighlight">\(I\)</span>
+axis are the ones obtained during the convergence phase.</p>
+<div class="figure align-center" id="id24">
+<span id="bpsk-ted-constellations"></span><img alt="../../_images/bpsk-ted_constellation.svg" src="../../_images/bpsk-ted_constellation.svg" /><p class="caption"><span class="caption-text">Constellation before and after time synchronisation</span><a class="headerlink" href="#id24" title="Permalink to this image"></a></p>
+</div>
+<p>We can also plot the EVM per symbol which also shows us the convergence of the TLL. When we are not synchronized
+the EVM is really bad, then gradually improves to settle to its actual value around -25dB:</p>
+<div class="figure align-center" id="id25">
+<span id="bpsk-evm"></span><img alt="../../_images/bpsk-evm.svg" src="../../_images/bpsk-evm.svg" /><p class="caption"><span class="caption-text">EVM plot</span><a class="headerlink" href="#id25" title="Permalink to this image"></a></p>
+</div>
+</div>
+<div class="section" id="decode-the-payload">
+<h2>Decode the payload<a class="headerlink" href="#decode-the-payload" title="Permalink to this headline"></a></h2>
+<p>We have retrieved our symbols, now we need to look for the synchronisation word in order to identify where the payload
+begins.</p>
+<p>As stated at the beginning of the example, the data is differentially encoded: A ‘1’ is encoded by <strong>not</strong> changing
+phase, and a ‘0’ is encoded by changing phase. Applying the reverse encoding is trivial:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># apply reverse differential encoding</span>
+<span class="n">decoded_bits</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">previous_bit</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">bits</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">bit</span> <span class="o">==</span> <span class="n">previous_bit</span><span class="p">:</span> <span class="n">decoded_bits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">previous_bit</span> <span class="o">=</span> <span class="n">bit</span>
+        <span class="n">decoded_bits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>After removing the differential encoding, we correlate the resulting  bit stream with the binary representation of the
+sync word:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="mh">0xF9A8</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="figure align-center" id="id26">
+<span id="bpsk-syncword"></span><img alt="../../_images/bpsk-syncWord.svg" src="../../_images/bpsk-syncWord.svg" /><p class="caption"><span class="caption-text">Correlation of data with sync word</span><a class="headerlink" href="#id26" title="Permalink to this image"></a></p>
+</div>
+<p>We detect a clear maximum at index 27. Since the word is 16-bit long, the payload starts at index 27+16/2=35.
+Our payload is 8 bytes long so we extract 64 bits starting at index 35 and we get:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Payload</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Which in hexadecimal is:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mh">0xDE</span> <span class="mh">0xAD</span> <span class="mh">0xBE</span> <span class="mh">0xEF</span> <span class="mh">0xCA</span> <span class="mh">0xFE</span> <span class="mh">0xBA</span> <span class="mh">0xD0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>But we still need to make sure this data is valid, by checking the CRC.</p>
+</div>
+<div class="section" id="crc">
+<h2>CRC<a class="headerlink" href="#crc" title="Permalink to this headline"></a></h2>
+<p>Acccording to our frame structure, the CRC is 16-bits long placed right after the payload. If we extract those
+bits from the decoded bits array previously obtained, we get our CRC candidate:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">CRC</span> <span class="n">candidate</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Next we recalculate the CRC from the payload data in order to check if we get the same value. A CRC
+is based on polynomial division with modulo-2 arithmetic and can be obtained from a linear shift register (LFSR) <a class="footnote-reference brackets" href="#id12" id="id6">6</a>.
+With a polynomial of <span class="math notranslate nohighlight">\(X^{16} + X^{12} + X^5 + 1\)</span>,
+its diagram representation is:</p>
+<div class="figure align-center" id="id27">
+<span id="bpsk-crc"></span><img alt="../../_images/bpsk-crc.svg" src="../../_images/bpsk-crc.svg" /><p class="caption"><span class="caption-text">CRC diagram</span><a class="headerlink" href="#id27" title="Permalink to this image"></a></p>
+</div>
+<p>We calculate the CRC and we get:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">CRC</span> <span class="n">calculated</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Success! The calculated CRC matches the one contained in the message, so we have verified our message integrity.</p>
+<p>The End.</p>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline"></a></h2>
+<dl class="footnote brackets">
+<dt class="label" id="id7"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p><a class="reference external" href="https://www.gaussianwaves.com/2012/07/intuitive-derivation-of-performance-of-an-optimum-bpsk-receiver-in-awgn-channel/">https://www.gaussianwaves.com/2012/07/intuitive-derivation-of-performance-of-an-optimum-bpsk-receiver-in-awgn-channel/</a></p>
+</dd>
+<dt class="label" id="id8"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>J.Costas, “Synchronous communications”, Proceedings of the IRE. 44(12): 1713–1718, 1956</p>
+</dd>
+<dt class="label" id="id9"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
+<dd><p><a class="reference external" href="https://wirelesspi.com/phase-locked-loop-pll-in-a-software-defined-radio-sdr/">https://wirelesspi.com/phase-locked-loop-pll-in-a-software-defined-radio-sdr/</a></p>
+</dd>
+<dt class="label" id="id10"><span class="brackets"><a class="fn-backref" href="#id4">4</a></span></dt>
+<dd><p>M.Rice, Digital Communications – A Discrete-Time Approach, Prentice Hall, 2009</p>
+</dd>
+<dt class="label" id="id11"><span class="brackets"><a class="fn-backref" href="#id5">5</a></span></dt>
+<dd><p>F.Gardner, “A BPSK/QPSK Timing-Error Detector for Sampled Receivers”, IEEE Transactions on Communications, Volume 34 Issue 4, p423-429, 1986</p>
+</dd>
+<dt class="label" id="id12"><span class="brackets"><a class="fn-backref" href="#id6">6</a></span></dt>
+<dd><p>W.W. Peterson, “Cyclic codes for error detection”, Proceedings of the IRE. 49(1): 228-235, 1961</p>
+</dd>
+</dl>
 </div>
 </div>
 
 
            </div>
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-
-      
-      
-
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../IQ-modulation/IQ-modulation.html" class="btn btn-neutral float-left" title="I/Q modulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../DSSS/DSSS.html" class="btn btn-neutral float-right" title="Direct-Sequence Spread Spectrum (DSSS)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2021, Yannish Ramgulam.
-
-    </p>
+    <p>&#169; Copyright 2022, Yannish Ramgulam.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE: 'true'
-        };
-    </script>
-      <script type="text/javascript" src="../jquery.js"></script>
-      <script type="text/javascript" src="../underscore.js"></script>
-      <script type="text/javascript" src="../doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../js/theme.js"></script>
-  
-
-  
-  
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

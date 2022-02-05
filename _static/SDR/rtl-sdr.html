@@ -1,71 +1,35 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RTL-SDR introduction &mdash; Standing Waves</title>
+      <link rel="stylesheet" href="../pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../my_theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../js/html5shiv.min.js"></script>
+  <![endif]-->
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>The RTL-SDR &mdash; Standing Waves</title>
-  
-
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  
-  
-    <link rel="stylesheet" href="../css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="Standing Waves" href="../../index.html"/>
-        <link rel="next" title="Decimation" href="../decimation/decimation.html"/>
-        <link rel="prev" title="Welcome to Standing Waves" href="../../index.html"/> 
-
-  
-  <script src="../js/modernizr.min.js"></script>
-
+        <script data-url_root="../../" id="documentation_options" src="../documentation_options.js"></script>
+        <script src="../jquery.js"></script>
+        <script src="../underscore.js"></script>
+        <script src="../doctools.js"></script>
+    <script src="../js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="I/Q modulation" href="../IQ-modulation/IQ-modulation.html" />
+    <link rel="prev" title="Welcome to Standing Waves" href="../../index.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
+        <div class="wy-side-nav-search" >
             <a href="../../index.html" class="icon icon-home"> Standing Waves
-          
-
-          
-            
-            <img src="../wavepic.png" class="logo" />
-          
+            <img src="../wavepic.png" class="logo" alt="Logo"/>
           </a>
-
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,144 +37,104 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-                <p class="caption"><span class="caption-text">SDR</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">SDR</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">The RTL-SDR</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#little-history">Little history</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">RTL-SDR introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#quick-history">Quick history</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#architecture-and-characteristics">Architecture and characteristics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#useful-links">Useful links</a></li>
 </ul>
 </li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modulations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../IQ-modulation/IQ-modulation.html">I/Q modulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../BPSK/BPSK.html">BPSK demodulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../DSSS/DSSS.html">Direct-Sequence Spread Spectrum (DSSS)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DSP tools</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../decimation/decimation.html">Decimation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../correlation/correlation.html">Correlation</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Demodulation examples</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../BPSK/BPSK.html">Demodulating a BSPK</a></li>
-</ul>
-<p class="caption"><span class="caption-text">RFU</span></p>
+<p class="caption" role="heading"><span class="caption-text">MISC</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../Others/RFU.html">RFU</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">Standing Waves</a>
-        
       </nav>
 
-
-      
       <div class="wy-nav-content">
         <div class="rst-content">
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html">Home</a> &raquo;</li>
-        
-      <li>The RTL-SDR</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>RTL-SDR introduction</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
-        
       </li>
-    
   </ul>
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="the-rtl-sdr">
-<h1>The RTL-SDR<a class="headerlink" href="#the-rtl-sdr" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="little-history">
-<h2>Little history<a class="headerlink" href="#little-history" title="Permalink to this headline">¶</a></h2>
+             
+  <div class="section" id="rtl-sdr-introduction">
+<h1>RTL-SDR introduction<a class="headerlink" href="#rtl-sdr-introduction" title="Permalink to this headline"></a></h1>
+<div class="section" id="quick-history">
+<h2>Quick history<a class="headerlink" href="#quick-history" title="Permalink to this headline"></a></h2>
 <p>The ‘discovery’ of the RTL-SDR was a major revolution in the world of Radio.
 Before then, SDRs were really expensive gear and mostly confined to engineering or research labs.
 Then in the early 2010’s, some clever people found (more information <a class="reference external" href="https://www.rtl-sdr.com/about-rtl-sdr/#:~:text=The%20origins%20of%20RTL%2DSDR,based%20on%20the%20RTL2832U%20chipset.&amp;text=Over%20the%20years%20since%20its,can%20access%20the%20radio%20spectrum.">here</a>)
 that we could take cheap DVB-T (Digital Video Brodcast) receiver dongles and access the
 raw IQ samples stream from the baseband chip directly.</p>
-<p><br /></p>
 <p>These dongles cost around 10$, making them available to anyone. The first ones to be used were the DVB-T dongles massively
 available on online selling platforms. They did have some issues: cheap crystal (i.e. poor frequency stability),
 thermal issues, dodgy connectors, etc. so some companies decided to redesign the dongles to make them more
 robust with a TCXO instead of a crystal, metal enclosures, Low noise regulators, etc.
 These ruggedized versions are more expensive (around 20-30$),
 but for what we can achieve with that, it’s still incredibly cheap.</p>
-<p><br /></p>
 <p>Over the years other types of affordable SDRs were made
 and we now have plenty of choices from 10$ to several thousands with everything in between. Here are some examples of RTL-SDR dongles:</p>
 <div class="figure align-center" id="id1">
 <span id="sdrtypes"></span><a class="reference internal image-reference" href="../../_images/dongles.png"><img alt="../../_images/dongles.png" src="../../_images/dongles.png" style="width: 722.8000000000001px; height: 237.60000000000002px;" /></a>
-<p class="caption"><span class="caption-text">Left: standard DVB-T - Center: Nooelec ruggedized RTL-SDR - Right: RTL-SDR.com ruggedized RTL-SDR</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Left: standard DVB-T - Center: Nooelec ruggedized RTL-SDR - Right: RTL-SDR.com ruggedized RTL-SDR</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
 </div>
 <p>The driver that allows us the use the SDR dongles is the librtlsdr driver developed by Osmocom
 (see link at the bottom).</p>
 </div>
 <div class="section" id="architecture-and-characteristics">
-<h2>Architecture and characteristics<a class="headerlink" href="#architecture-and-characteristics" title="Permalink to this headline">¶</a></h2>
+<h2>Architecture and characteristics<a class="headerlink" href="#architecture-and-characteristics" title="Permalink to this headline"></a></h2>
 <p>The fundamental architecture for most dongles is based on the R820T RFIC from Rafael Micro (<a class="reference external" href="https://rtl-sdr.com/wp-content/uploads/2013/04/R820T_datasheet-Non_R-20111130_unlocked.pdf">Datasheet</a>)
 and the RTL2832U baseband IC from Realtek (<a class="reference external" href="https://www.realtek.com/en/products/communications-network-ics/item/rtl2832u">website</a>).
 The picture below shows a very simplified synoptic of the way the RTL-SDR operates.</p>
 <div class="figure align-center" id="id2">
 <span id="sdrarchitecture"></span><a class="reference internal image-reference" href="../../_images/rtl-architecture.svg"><img alt="../../_images/rtl-architecture.svg" src="../../_images/rtl-architecture.svg" /></a>
-<p class="caption"><span class="caption-text">RTL-SDR architecture</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">RTL-SDR architecture</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
 </div>
-<p>The R820T tuner has a classic single-ended superheterodyne architecture with an IF frequency of 3.57 MHz.
-It has a variable gain LNA at the input and a variable IF amplifier (VGA) after the IF filter.
-The mixer’s gain can also be adjusted in a limited way.
-With most SDR software using the librtsldr driver, the IF amplifier can be set to auto (variable gain) mode
-or set to fixed mode, but the IF gain in fixed mode cannot be changed. Similarly the LNA can be set to auto mode
-or fixed mode, and the gain in fixed mode can be set from 0 to 50dB. In reality, this 50dB range
-includes both (LNA + Mixer) gains without distinction between the two. In recent versions of librtlsdr however,
-it appears LNA, Mixer and VGA gains can now be set independently achieving a combined range of 100dB.</p>
-<p><br /></p>
+<p>The R820T tuner has a classic single-ended superheterodyne architecture.
+The input LNA can be set to fixed or auto gain mode, and the gain in fixed mode can be set from 0 to 50dB.
+That 50 dB range actually includes the mixer gain that cannot be set independently. The output of the mixer then
+goes into a 3.57MHz IF filter, before being fed to an IF amplifier (VGA). Like the LNA, the VGA can be set
+into fixed or auto gain mode, although the gain in fixed mode cannot be changed. It appears however with the
+latest versions of librtlsdr that it is now possible to set the mixer gain separately from the LNA.
+It is also possible to set the gain value when the VGA is in
+fixed gain mode, allowing for a total combined gain range of 100dB for LNA + Mixer + VGA.</p>
 <p>Once the IF signal gets out of the tuner, it’s sampled by the RTL2832’s ADC with a sampling frequency
-of 28.8 MHz. The ADC has a resolution of 8 bits, but an ENOB of ~7 bits. As explained in the article
-about decimation, this resolution can be improved through oversampling and decimation. The sampled
+of 28.8 MHz. The ADC has a resolution of 8 bits, but an ENOB of ~7 bits, however this resolution can be improved through oversampling and decimation. The sampled
 signal is converted to IQ format and translated to baseband, then the I and Q branches are decimated and the resulting
 samples are made available through a USB bus. The final sampling rate can be chosen from 225 kHz to
 3.2 MHz; although the stream is known to be unstable (samples will be dropped) above 2.56 MHz.</p>
-<p><br /></p>
 <p>Some dongles also provide a direct access at the RTL2832’s ADC input, allowing for direct sampling.
 The RTL2832 can then sample the low-end of the spectrum (HF bands), where lots of Hams operate.</p>
-<p><br /></p>
 <p>In summary:</p>
-<p><br /></p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 30%" />
@@ -244,7 +168,7 @@ The RTL2832 can then sample the low-end of the spectrum (HF bands), where lots o
 </table>
 </div>
 <div class="section" id="useful-links">
-<h2>Useful links<a class="headerlink" href="#useful-links" title="Permalink to this headline">¶</a></h2>
+<h2>Useful links<a class="headerlink" href="#useful-links" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 34%" />
@@ -275,70 +199,32 @@ The RTL2832 can then sample the low-end of the spectrum (HF bands), where lots o
 
            </div>
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-
-      
-      
-
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../index.html" class="btn btn-neutral float-left" title="Welcome to Standing Waves" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../IQ-modulation/IQ-modulation.html" class="btn btn-neutral float-right" title="I/Q modulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2021, Yannish Ramgulam.
-
-    </p>
+    <p>&#169; Copyright 2022, Yannish Ramgulam.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE: 'true'
-        };
-    </script>
-      <script type="text/javascript" src="../jquery.js"></script>
-      <script type="text/javascript" src="../underscore.js"></script>
-      <script type="text/javascript" src="../doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../js/theme.js"></script>
-  
-
-  
-  
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

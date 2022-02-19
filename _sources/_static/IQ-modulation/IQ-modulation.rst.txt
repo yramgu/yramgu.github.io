@@ -5,9 +5,6 @@ I/Q modulation
 Basics
 ===========================
 
-.. warning::
-    Article under construction
-
 The :math:`I/Q` representation is the universal way of representing a modulating (or baseband) signal. It consists of representing symbols
 in a complex plane with an **In-phase** component :math:`X_I` and a **Quadrature** component :math:`X_Q`. A given symbol :math:`S`
 will be represented as

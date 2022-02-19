@@ -28,6 +28,7 @@ is reversed, which is what a phase change from :math:`0` to :math:`\pi` (or vice
 .. _bpsk_ideal_constellation:
 .. figure:: bpsk_ideal_constellation.svg
     :align: center
+    :scale: 100%
 
     BPSK representation
 
@@ -40,6 +41,7 @@ This produces nulls in the signal enveloppe at each transition. The example belo
 .. _bpsk_ideal_iq:
 .. figure:: bpsk-ideal-iq.svg
     :align: center
+    :scale: 100%
 
     BPSK IQ exemple and resulting enveloppe
 
@@ -87,9 +89,9 @@ For this exercise, we will work with a BPSK waveform with the following characte
 
 The message has the following structure:
 
-+------------------------+-----------------------+----------------------+----------------+
-| **Preamble**: 0xAAAAAA | **Sync Word**: 0xF9A8 | **Payload**: 8 bytes | **CRC**: CRC16 |
-+------------------------+-----------------------+----------------------+----------------+
++------------------------+-----------------------+----------------------+---------------------------------------+
+| **Preamble**: 0xAAAAAA | **Sync Word**: 0xF9A8 | **Payload**: 8 bytes | **CRC**: CRC16 (computed from payload)|
++------------------------+-----------------------+----------------------+---------------------------------------+
 
 The goal, of course, is to decode the payload.
 
@@ -101,6 +103,7 @@ We open the WAV file and plot the IQ data and FFT:
 .. _bpsk_iq_fft:
 .. figure:: bpsk_iq_fft.svg
     :align: center
+    :scale: 100%
 
     IQ data and FFT
 
@@ -112,6 +115,7 @@ IQ data looks so dense: zooming in shows us the 12 kHz carrier with ~83ms period
 .. _bpsk_iq_12k_zoom:
 .. figure:: bpsk_iq_12k_zoom.svg
     :align: center
+    :scale: 100%
 
     IQ data zoom
 
@@ -126,7 +130,7 @@ How do we rotate? That's very easy: we multiply by a complex exponential. Recall
 
 .. math::
 
-    A[ cos(2 \pi f_c t) + jsin(2 \pi f_c t) ] = Ae^{2 \pi f_c t}
+    A\Bigl[ cos(2 \pi f_c t) + jsin(2 \pi f_c t) \Bigl] = Ae^{2 \pi f_c t}
 
 This is called a phasor, which is represented in the complex plane by a rotating vector of amplitude :math:`A`. 
 Let's consider a phasor :math:`p` at frequency :math:`f_0` given by :math:`e^{2 \pi f_0 t}`. We want to translate it 
@@ -148,10 +152,16 @@ The IQ waveforms look better, however still different from the ideal one shown i
 and we still have a quadrature component. This means two things:
 
 - The constellation has a (static) phase offset
-- There is a residual frequency offset
+- There is a residual frequency Offset
 
-Fine frequency correction: the Costas loop
-==========================================
+.. Note::
+    At this stage, any sane engineer would decimate. We are looking at a 100bps signal sampled at 100ksps, i.e. 1000 samples/symbol!
+    We could easily decimate by 50 or 100 to get respectively 20 or 10 samples/symbols.
+    For this article I thought the plots looked nicer with the original sampling rate so I didn't bother. Unfortunately it seems like this
+    website is all about looks...
+
+Fine frequency correction and demodulation: the Costas loop
+===========================================================
 
 The costas loop is the most central piece. A costas loop is a quadrature PLL designed for carrier phase recovery, invented by
 John Costas in 1956 [2]_.
@@ -162,6 +172,7 @@ The block diagram of a costas loop for BPSK demodulation is:
 .. _bpsk_costas_diagram:
 .. figure:: bpsk-costas-diagram.svg
     :align: center
+    :scale: 100%
 
     Costas loop diagram
 
@@ -198,7 +209,7 @@ Likewise on the :math:`Q` arm we have:
 .. math::
 
     \begin{align}
-        x_I(t)& = m_{bb}(t).cos(\omega_0t + \theta).-2sin(\omega_0t + \phi) \\
+        x_Q(t)& = m_{bb}(t).cos(\omega_0t + \theta).-2sin(\omega_0t + \phi) \\
               & = m_{bb}(t).\Bigl[sin(\theta - \phi) - sin(2 \omega_0 t + \theta + \phi)\Bigl]
     \end{align}
 
@@ -227,6 +238,7 @@ the loop to behave exactly like a classic PLL. The figure below represents a 2nd
 .. _bpsk_pll:
 .. figure:: bpsk-pll.svg
     :align: center
+    :scale: 100%
 
     2nd order PLL
 
@@ -268,6 +280,7 @@ and :math:`x_{LPQ}(t)`:
 .. _bpsk_costas_output:
 .. figure:: bpsk-costas-output.svg
     :align: center
+    :scale: 100%
 
     Costas loop output
 
@@ -293,6 +306,7 @@ using a Timing Error Detector (TED) algorithm:
 .. _bpsk_tll:
 .. figure:: bpsk-tll.svg
     :align: center
+    :scale: 100%
 
     Time Locked Loop
 
@@ -304,7 +318,7 @@ simple one particularly suited to BPSK: the Gardner TED [5]_. The Gardner TED is
 .. figure:: bpsk-gardner.svg
     :align: center
 
-    Gardner alorithm illustration
+    Gardner algorithm illustration
 
 The Gardner equation giving the timing error is:
 
@@ -314,15 +328,15 @@ The Gardner equation giving the timing error is:
 
 We note the symbol period :math:`T_M`. The algorithm will evaluate a symbol at time :math:`nT_M` and  
 the preceding one at time :math:`(n-1)T_M` (the two red dots), take the difference and multiply by the middle point at 
-time :math:`T_M(n-\frac{1}{2})` (orange dot). 
+time :math:`T_M\Bigl(n-\frac{1}{2}\Bigl)` (orange dot). 
 
 In the illustration above, we have:
 
-- :math:`(a) \quad e[nT_M] = (-0.8-0.8) \times (+0.2) = -0.32`: A timing advance yields a negative error
-- :math:`(b) \quad e[nT_M] = (-0.8-0.8) \times (-0.2) = +0.32`: A timing delay yields a positive error
-- :math:`(c) \quad e[nT_M] = (-1-1) \times 0 = 0`: A perfect timing yields zero error
+- :math:`(a) \quad e[n] = (-0.8-0.8) \times (+0.2) = -0.32`: A timing advance yields a negative error
+- :math:`(b) \quad e[n] = (-0.8-0.8) \times (-0.2) = +0.32`: A timing delay yields a positive error
+- :math:`(c) \quad e[n] = (-1-1) \times 0 = 0`: A perfect timing yields zero error
 
-What we want is to sample the symbols at the right time, so in order to do that we need to add an error term
+What we want is to sample the symbols at the right time, so we need to add an error term
 :math:`\varepsilon` to the sampling instant. It becomes obvious that in order to do this the signal needs
 to be interpolated/oversampled. This algorithm can't function if our input signal comes at a rate of 1 sample/symbol.
 We need to oversample so that if we are sampling too early, we can adjust :math:`\varepsilon` to sample slightly
@@ -339,6 +353,7 @@ see how it converges:
 .. _bpsk_ted:
 .. figure:: bpsk-ted.svg
     :align: center
+    :scale: 100%
 
     Output of the TLL
 
@@ -354,6 +369,7 @@ axis are the ones obtained during the convergence phase.
 .. _bpsk_ted_constellations:
 .. figure:: bpsk-ted_constellation.svg
     :align: center
+    :scale: 100%
 
     Constellation before and after time synchronisation
 
@@ -363,10 +379,11 @@ the EVM is really bad, then gradually improves to settle to its actual value aro
 .. _bpsk_evm:
 .. figure:: bpsk-evm.svg
     :align: center
+    :scale: 100%
 
     EVM plot
 
-Decode the payload
+Decoding the payload
 ==============================
 
 We have retrieved our symbols, now we need to look for the synchronisation word in order to identify where the payload 
@@ -396,6 +413,7 @@ sync word:
 .. _bpsk_syncWord:
 .. figure:: bpsk-syncWord.svg
     :align: center
+    :scale: 100%
 
     Correlation of data with sync word
 
@@ -414,24 +432,27 @@ Which in hexadecimal is:
 
 But we still need to make sure this data is valid, by checking the CRC.
 
-CRC
+Checking the CRC
 ==============================
 
-Acccording to our frame structure, the CRC is 16-bits long placed right after the payload. If we extract those
-bits from the decoded bits array previously obtained, we get our CRC candidate:
+The CRC (Cyclic Redundancy Check) is a mechanism that allows us to verify the integrity of our message [6]_.
+Acccording to our frame structure, the CRC  is 16-bits long, placed right after the payload. 
+If we extract those bits from the decoded bits array previously obtained, we get our received CRC:
 
 .. code-block:: python
 
-    CRC candidate: [0 1 0 1 0 1 1 0 0 0 0 0 1 1 0]
+    CRC received: [0 1 0 1 0 1 1 0 0 0 0 0 1 1 0]
 
-Next we recalculate the CRC from the payload data in order to check if we get the same value. A CRC
-is based on polynomial division with modulo-2 arithmetic and can be obtained from a linear shift register (LFSR) [6]_. 
-With a polynomial of :math:`X^{16} + X^{12} + X^5 + 1`, 
-its diagram representation is:
+Since the CRC was originally computed from the payload data, we recalculate the CRC from the payload data we received in order 
+to check if we get the same value as the CRC we received. 
+
+A CRC is based on polynomial division with modulo-2 arithmetic and can be obtained from 
+a linear shift register (LFSR) [6]_. With a polynomial of :math:`X^{16} + X^{12} + X^5 + 1`, its diagram representation is:
 
 .. _bpsk_crc:
 .. figure:: bpsk-crc.svg
     :align: center
+    :scale: 100%
 
     CRC diagram
 
@@ -443,10 +464,7 @@ We calculate the CRC and we get:
 
 Success! The calculated CRC matches the one contained in the message, so we have verified our message integrity.
 
-The End.
-
-
-
+Now it's your turn to explore the code and learn from it.
 
 
 References

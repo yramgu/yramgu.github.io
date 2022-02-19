@@ -21,7 +21,15 @@ represented in block diagrams as shown below:
 
     Decimation block
 
-Aliasing issue
+In Python the decimation
+operation can be done automatically using a dedicated function from Scipy:
+
+.. code-block:: python
+    :emphasize-lines: 1
+
+    y = scipy.signal.decimate(x, decimation_factor, ftype='fir')
+
+The aliasing problem
 ===========================
 
 Say we are sampling at Frequency :math:`Fs`: the Nyquist bandwidth will extend from DC to :math:`\frac{Fs}{2}`, 
@@ -45,7 +53,7 @@ our new Nyquist bandwidth (Alias :math:`A`), which is what we call Aliasing.
 In order to get rid of potential aliases, we must first implement a low-pass filter (otherwise known as anti-aliasing
 filter) prior to the downsampling operation. 
 
-An example
+Aliasing example
 ===========================
 
 As an example, we generate two tones sampled at a rate of 10 kHz:
@@ -56,6 +64,8 @@ and its power spectrum is given in Plot 2. In this case, the Nyquist bandwidth e
     :class: pythonCode
     
     :download:`Download here <../Scripts/aliasing.py>`
+
+    Validated with: Python 3.6.7 - Numpy 1.19.4 - Scipy 1.5.4 - Matplotlib 3.3.3
 
 .. _figAliasExperiment:
 .. figure:: aliasing_python.svg
@@ -68,7 +78,7 @@ Then we downsample that signal by dropping 1 out of 10 samples. The new sampling
 and the nyquist bandwidth is reduced to 500 Hz, which should leave us only with the 100 Hz tone. 
 The resulting power spectrum is shown on plot 3.
 
-We can see our 100 Hz tone, but we now have an uninvited guest showing up at 300 Hz, and that tone shouldn't exist.
+We can see our 100 Hz tone, but we now have an **uninvited guest showing up at 300 Hz**, and that tone shouldn't exist.
 Now that our Nyquist bandwidth ranges from 0 to 500 Hz (1st Nyquist zone), the 2nd Nyquist zone ranges
 from 500 Hz to 1000 Hz and so on. The 700 Hz tone is in the 2nd Nyquist zone; and every even Nyquist zone will fold back
 flipped onto the 1st one. Thus our 700Hz tone is now showing up on 1000-700 = 300 Hz:
@@ -81,16 +91,18 @@ flipped onto the 1st one. Thus our 700Hz tone is now showing up on 1000-700 = 30
     Folding mechanism
 
 So we implement a low-pass filter first to eliminate the unwanted tone at 700 Hz, then we downsample and the
-result can be seen in Plot 4, where the 300 Hz alias has disappeared. In Python the decimation
-operation can be done automatically using a dedicated function from Scipy:
-
-.. code-block:: python
-    :emphasize-lines: 1
-
-    y = scipy.signal.decimate(x, decimation_factor, ftype='fir')
+result can be seen in Plot 4, where the 300 Hz alias has disappeared. 
 
 SNR improvement
 ===========================
+
+.. admonition:: The full python code for this example is available
+    :class: pythonCode
+    
+    :download:`Download here <../Scripts/ook.zip>`
+
+    Validated with: Python 3.6.7 - Numpy 1.19.4 - Scipy 1.5.4 - Matplotlib 3.3.3
+
 
 Decimation will also improve the Signal-to-Noise Ratio (SNR): indeed, as we are reducing
 the bandwidth, we are reducing the noise. This type of improvement is called a processing gain, 
@@ -101,19 +113,18 @@ and its value in dB can be calculated by the formula:
     G_{dB} = 10log_{10} \left(\frac{Fs_{old}}{Fs_{new}}\right)
 
 We can see below an example of decimation on a signal acquired with the RTL: the 
-signal was sampled at 2 MHz then decimated by 10 to 200 kHz. We can clearly see the noise reduction
-on the IQ traces.
+signal was sampled at 2 MHz then decimated by 10 to 200 kHz. The noise reduction is visible 
+on the IQ traces, and the spectrum is displayed as well to show the reduced bandwidth.
 
 .. _figDecIQ:
-.. figure:: IQ_decimated.PNG
+.. figure:: IQ_decimated.svg
     :align: center
     :scale: 100%
 
     RTL-SDR decimated IQ
 
 The SNR improvement is :math:`10log_{10} \left(\frac{2M}{200k}\right) = 10dB`. So just like that, we've reduced our noise 
-by 10dB. Additionally, since we now have 10x less samples, it will result in a decreased processing load for 
-whatever step comes next.   
+by 10dB. Additionally, since we now have 10x less samples, the next processing steps will run with reduced computing power needs.   
 
 .. admonition:: But then we might ask ourselves...
 

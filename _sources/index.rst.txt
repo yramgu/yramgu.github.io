@@ -66,10 +66,4 @@ Python code packages available for download are under the `MIT license <https://
     ./_static/decimation/decimation
     ./_static/correlation/correlation
 
-.. toctree::
-    :maxdepth: 1
-    :hidden:
-    :caption: MISC
-
-    ./_static/Others/RFU
 

@@ -15,6 +15,7 @@
         <script src="../jquery.js"></script>
         <script src="../underscore.js"></script>
         <script src="../doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -44,7 +45,19 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Modulations</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">I/Q modulation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">I/Q modulation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basics">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#arbitrary-modulation">Arbitrary modulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#complex-baseband-signals">Complex baseband signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#i-q-impairments">I/Q impairments</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dc-offset">DC Offset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gain-imbalance">Gain imbalance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#phase-imbalance">Phase imbalance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#evm-vector-error-magnitude">EVM (Vector Error Magnitude)</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../BPSK/BPSK.html">BPSK demodulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../DSSS/DSSS.html">Direct-Sequence Spread Spectrum (DSSS)</a></li>
 </ul>
@@ -52,10 +65,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../decimation/decimation.html">Decimation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../correlation/correlation.html">Correlation</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">MISC</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../Others/RFU.html">RFU</a></li>
 </ul>
 
         </div>
@@ -83,9 +92,284 @@
              
   <div class="section" id="i-q-modulation">
 <h1>I/Q modulation<a class="headerlink" href="#i-q-modulation" title="Permalink to this headline"></a></h1>
+<div class="section" id="basics">
+<h2>Basics<a class="headerlink" href="#basics" title="Permalink to this headline"></a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Article under construction</p>
+</div>
+<p>The <span class="math notranslate nohighlight">\(I/Q\)</span> representation is the universal way of representing a modulating (or baseband) signal. It consists of representing symbols
+in a complex plane with an <strong>In-phase</strong> component <span class="math notranslate nohighlight">\(X_I\)</span> and a <strong>Quadrature</strong> component <span class="math notranslate nohighlight">\(X_Q\)</span>. A given symbol <span class="math notranslate nohighlight">\(S\)</span>
+will be represented as</p>
+<div class="figure align-center" id="id1">
+<span id="iq"></span><a class="reference internal image-reference" href="../../_images/iq_constellation.svg"><img alt="../../_images/iq_constellation.svg" src="../../_images/iq_constellation.svg" /></a>
+<p class="caption"><span class="caption-text">Symbol representation in the I/Q plane</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</div>
+<p>The magnitude of <span class="math notranslate nohighlight">\(S\)</span> is:</p>
+<div class="math notranslate nohighlight">
+\[|S| = A = \sqrt{X_I^2 + X_Q^2}\]</div>
+<p>The phase of <span class="math notranslate nohighlight">\(S\)</span> is:</p>
+<div class="math notranslate nohighlight">
+\[\angle{S} = \phi = \arctan{\frac{X_Q}{X_I}}\]</div>
+<p><span class="math notranslate nohighlight">\(S\)</span> can be re-written as</p>
+<div class="math notranslate nohighlight">
+\[S = A\cos(\phi) + jA\sin(\phi) = Ae^{j\phi}\]</div>
+<p>The figure below shows a constellation for a QPSK. A QPSK has four symbols each representing two bits,
+and those symbols are equally spaced by 90° :</p>
+<div class="figure align-center" id="id2">
+<span id="qpsk-iq"></span><a class="reference internal image-reference" href="../../_images/QPSK_constellation.svg"><img alt="../../_images/QPSK_constellation.svg" src="../../_images/QPSK_constellation.svg" /></a>
+<p class="caption"><span class="caption-text">QPSK constellation example</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</div>
+<p>The symbols coordinates are:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 80%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Symbol</p></td>
+<td><p>Coordinates</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(00\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(+\frac{\sqrt{2}}{2} + j\frac{\sqrt{2}}{2}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(01\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(-\frac{\sqrt{2}}{2} + j\frac{\sqrt{2}}{2}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(11\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(-\frac{\sqrt{2}}{2} - j\frac{\sqrt{2}}{2}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(10\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(+\frac{\sqrt{2}}{2} - j\frac{\sqrt{2}}{2}\)</span></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-but admonition">
+<p class="admonition-title">But</p>
+<p>Why do we perform quadrature modulation?</p>
+</div>
+<p>There are plenty of reasons, we’ll explore two simple but fundamental ones</p>
+<ul class="simple">
+<li><ol class="arabic simple">
+<li><p>Easily perform arbitrary phase/frequency/amplitude modulation from a simple low frequency baseband signal</p></li>
+</ol>
+</li>
+<li><ol class="arabic simple" start="2">
+<li><p>Transmit <em>complex</em> baseband signals</p></li>
+</ol>
+</li>
+</ul>
+</div>
+<div class="section" id="arbitrary-modulation">
+<h2>Arbitrary modulation<a class="headerlink" href="#arbitrary-modulation" title="Permalink to this headline"></a></h2>
+<p>Let’s consider the simple case of a modulating signal <span class="math notranslate nohighlight">\(x_{bb}(t)\)</span> and a carrier wave <span class="math notranslate nohighlight">\(\cos{(\omega_0t + \phi)}\)</span>.
+These signals are mixed together using a simple modulator:</p>
+<div class="figure align-center" id="id3">
+<span id="real-mixing"></span><a class="reference internal image-reference" href="../../_images/real_mixing.svg"><img alt="../../_images/real_mixing.svg" src="../../_images/real_mixing.svg" /></a>
+<p class="caption"><span class="caption-text">Simple modulator</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+</div>
+<p>The output of the modulator will be</p>
+<div class="math notranslate nohighlight">
+\[x_{RF}(t) = x_{bb}(t)\cos{(\omega_0t+\phi)}\]</div>
+<p>If we want to perform amplitude modulation, it’s pretty straightforward. The amplitude of the carrier is directly <span class="math notranslate nohighlight">\(x_{bb}(t)\)</span> which
+is easily generated with a DAC or other mean (filtered PWM, etc). However if we want to generate phase (or frequency) modulation, it becomes less straightforward.
+How can we easily modify the phase <span class="math notranslate nohighlight">\(\phi\)</span> of the carrier? If that carrier has a frequency of say 1GHz, this would requires very fast
+circuits and/or processors!</p>
+<p>This is where trigonometry comes to the rescue. Indeed, we know that:</p>
+<div class="math notranslate nohighlight">
+\[cos(\theta+\phi) = \cos(\theta)\cos(\phi) - \sin(\theta)\sin(\phi)\]</div>
+<p>An arbitrarily modulated carrier would be written as</p>
+<div class="math notranslate nohighlight">
+\[x(t) =  a(t)\cos\Bigl(\omega_0t+\phi(t)\Bigl)\]</div>
+<p>With</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(a(t)\)</span> the envelope</p></li>
+<li><p><span class="math notranslate nohighlight">\(\omega_0\)</span> the frequency</p></li>
+<li><p><span class="math notranslate nohighlight">\(\phi(t)\)</span> the phase</p></li>
+</ul>
+<p>We apply the trigonometric identity which gives us:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    a(t)\cos\Bigl(\omega_0t+\phi(t)\Bigl) &amp;= \color{blue}a(t)\cos\Bigl(\phi(t)\Bigl)\color{black}\cos(\omega_0t) - \color{red}a(t)\sin\Bigl(\phi(t)\Bigl)\color{black}\sin(\omega_0t) \\
+                                          &amp;= \color{blue}X_I(t)\color{black}\cos(\omega_0t) - \color{red}X_Q(t)\color{black}\sin(\omega_0t)
+\end{align}\end{split}\]</div>
+<p>If we want to perform arbitrary amplitude and phase modulation we need two low-frequency terms <span class="math notranslate nohighlight">\(a(t)\cos(\phi(t))\)</span> and <span class="math notranslate nohighlight">\(a(t)\sin(\phi(t))\)</span>.
+They are in fact respectively the <span class="math notranslate nohighlight">\(X_I\)</span> and <span class="math notranslate nohighlight">\(X_Q\)</span> components of the baseband signal represented in the <span class="math notranslate nohighlight">\(I/Q\)</span> plane, as defined in the “Basics” section.
+Since they are low frequency signals, they would be fairly easy to generate with a DAC.</p>
+<p>But now the carrier wave has been split into two terms <span class="math notranslate nohighlight">\(\cos(\omega_0t)\)</span> and <span class="math notranslate nohighlight">\(-\sin(\omega_0t)\)</span>, so we cannot use
+the simple modulator circuit shown above. We need a new circuit: the quadrature modulator.</p>
+<p>It becomes apparent that we can transmit two independant information, <span class="math notranslate nohighlight">\(X_I\)</span> and <span class="math notranslate nohighlight">\(X_Q\)</span>, on two different carriers
+that have the same frequency but are orthogonal to each other. These two independant components can individually be
+recovered at the receiver by means of a quadrature demodulator.</p>
+<p>So how do we perform the quadrature modulation in an actual circuit?</p>
+<div class="figure align-center" id="id4">
+<span id="complex-mixing"></span><a class="reference internal image-reference" href="../../_images/complex_mixing.svg"><img alt="../../_images/complex_mixing.svg" src="../../_images/complex_mixing.svg" /></a>
+<p class="caption"><span class="caption-text">Quadrature modulator</span><a class="headerlink" href="#id4" title="Permalink to this image"></a></p>
+</div>
+<p>A baseband processor generates <span class="math notranslate nohighlight">\(X_I\)</span> and <span class="math notranslate nohighlight">\(X_Q\)</span> in the digital domain, and this is then translated into the analog domain
+(voltages) with DACs. The local oscillator is assumed to produce <span class="math notranslate nohighlight">\(cos(\omega_0t)\)</span> by default. In order to generate <span class="math notranslate nohighlight">\(-sin(\omega_0t)\)</span>
+we simply need to dephase the <span class="math notranslate nohighlight">\(cos\)</span> by <span class="math notranslate nohighlight">\(+\frac{\pi}{2}\)</span> following the trigonometric identity</p>
+<div class="math notranslate nohighlight">
+\[\cos\Bigl(\theta+\frac{\pi}{2}\Bigl) = -\sin(\theta)\]</div>
+<p><span class="math notranslate nohighlight">\(X_I\)</span> is mixed with <span class="math notranslate nohighlight">\(cos(\omega_0)\)</span> and <span class="math notranslate nohighlight">\(X_Q\)</span> is mixed with <span class="math notranslate nohighlight">\(-sin(\omega_0)\)</span>.
+The two resulting <span class="math notranslate nohighlight">\(I\)</span> and <span class="math notranslate nohighlight">\(Q\)</span> branches are then summed together to form the final modulated waveform at RF</p>
+<div class="math notranslate nohighlight">
+\[x_{RF}(t) = X_I(t)\cos(\omega_0t) - X_Q(t)\sin(\omega_0t)\]</div>
+</div>
+<div class="section" id="complex-baseband-signals">
+<h2>Complex baseband signals<a class="headerlink" href="#complex-baseband-signals" title="Permalink to this headline"></a></h2>
+<p>Let’s begin by the case of a real modulation, as illustrated in the previous diagram of a simple modulator. We define <span class="math notranslate nohighlight">\(x_{bb}(t)\)</span>
+as a real baseband signal. A real baseband signal is centered on 0Hz, and the negative frequency content is the symmetrical
+of the positive frequency content:</p>
+<div class="figure align-center" id="id5">
+<span id="real-bb"></span><a class="reference internal image-reference" href="../../_images/iq_realBB.svg"><img alt="../../_images/iq_realBB.svg" src="../../_images/iq_realBB.svg" /></a>
+<p class="caption"><span class="caption-text">Real baseband signal</span><a class="headerlink" href="#id5" title="Permalink to this image"></a></p>
+</div>
+<p>If we perform simple mixing, we will end up with our wanted signal, but also with an (unwanted) image. Let’s define for simplicity</p>
+<div class="math notranslate nohighlight">
+\[x_{bb}(t) =  \cos(\omega_it)\]</div>
+<p>After mixing we will have</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    x_{RF}(t) &amp;= \cos(\omega_it)\cos(\omega_0t) \\
+              &amp;= 0.5\Bigl[\cos(\omega_0+\omega_i)t + \cos(\omega_0-\omega_i)t\Bigl]
+\end{align}\end{split}\]</div>
+<p>The resulting signal contains a component at frequency <span class="math notranslate nohighlight">\(\omega_0+\omega_i\)</span> and another at <span class="math notranslate nohighlight">\(\omega_0-\omega_i\)</span>.
+One of them is the wanted and the other is the image. The spectrum looks like this:</p>
+<div class="figure align-center" id="id6">
+<span id="real-rf"></span><a class="reference internal image-reference" href="../../_images/iq_realRF.svg"><img alt="../../_images/iq_realRF.svg" src="../../_images/iq_realRF.svg" /></a>
+<p class="caption"><span class="caption-text">Real RF signal</span><a class="headerlink" href="#id6" title="Permalink to this image"></a></p>
+</div>
+<p>This is not really ideal as we do need to get rid of the image. This would be done by means of filtering which can be quite difficult to implement
+if it has to be done in hardware.</p>
+<p>What happens if we now define <span class="math notranslate nohighlight">\(x_{bb}(t)\)</span> as a complex baseband signal? A complex baseband signal is centered on 0Hz,
+but is asymetrical:</p>
+<div class="figure align-center" id="id7">
+<span id="cpx-bb"></span><a class="reference internal image-reference" href="../../_images/iq_cpxBB.svg"><img alt="../../_images/iq_cpxBB.svg" src="../../_images/iq_cpxBB.svg" /></a>
+<p class="caption"><span class="caption-text">Complex baseband signal</span><a class="headerlink" href="#id7" title="Permalink to this image"></a></p>
+</div>
+<p>We have seen that a complex baseband signal can be defined as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    x_{bb}(t) &amp;= X_I(t) + jX_Q(t) \\
+              &amp;= a(t)e^{j\phi(t)}
+\end{align}\end{split}\]</div>
+<p>Staying in the complex domain, we mix it with a complex sinusoid at frequency <span class="math notranslate nohighlight">\(\omega_0\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    x_{RF}(t) &amp;= x_{bb}(t)e^{j\omega_0t} \\
+\end{align}\end{split}\]</div>
+<p>However in the real world we can only transmit real signals, we cannot transmit imaginary ones. So what we can transmit is in fact</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    x_{RF}(t) &amp;= \Re\Bigl(x_{bb}(t)e^{j\omega_0t}\Bigl) \\
+              &amp;= \Re\Bigl[\Bigl(X_I(t)+jX_Q(t)\Bigl)\Bigl(\cos(\omega_0t)+j\sin(\omega_0t)\Bigl)\Bigl] \\
+              &amp;= \Re\Bigl[X_I(t)\cos(\omega_0t) + jX_I(t)\sin(\omega_0t) + jX_Q(t)\cos(\omega_0t) + j^2X_Q(t)\sin(\omega_0t)\Bigl] \\
+              &amp;= \Re\Bigl[\color{blue}X_I(t)\cos(\omega_0t)-X_Q(t)\sin(\omega_0t) \color{black}+ \color{red}j\Bigl(X_I(t)\sin(\omega_0t)+X_Q(t)\cos(\omega_0t)\Bigl)\color{black}\Bigl] \\
+              &amp;= X_I(t)\cos(\omega_0t)-X_Q(t)\sin(\omega_0t) \\
+              &amp;= a(t)\cos\Bigl(\omega_0t + \phi(t)\Bigl)
+\end{align}\end{split}\]</div>
+<p>We just found the expression of <span class="math notranslate nohighlight">\(x_{RF}\)</span> when generated by a quadrature modulator (surprise surprise).
+The spectrum of such a modulated signal is unique (no image), centered on <span class="math notranslate nohighlight">\(\omega_0\)</span>:</p>
+<div class="figure align-center" id="id8">
+<span id="cps-rf"></span><a class="reference internal image-reference" href="../../_images/iq_cpxRF.svg"><img alt="../../_images/iq_cpxRF.svg" src="../../_images/iq_cpxRF.svg" /></a>
+<p class="caption"><span class="caption-text">Complex RF signal</span><a class="headerlink" href="#id8" title="Permalink to this image"></a></p>
+</div>
+</div>
+<div class="section" id="i-q-impairments">
+<h2>I/Q impairments<a class="headerlink" href="#i-q-impairments" title="Permalink to this headline"></a></h2>
+<div class="pythoncode admonition">
+<p class="admonition-title">The full python code for this example is available</p>
+<p><a class="reference download internal" download="" href="../../_downloads/c343034d39dce8eb9aa9ec8da3969d49/iq-imbalance.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">here</span></code></a></p>
+<p>Validated with: Python 3.6.7 - Numpy 1.19.4 - Scipy 1.5.4 - Matplotlib 3.3.3</p>
+</div>
+<p>The quadrature modulator circuit previously shown works on the asssumtion that the <span class="math notranslate nohighlight">\(I\)</span> and <span class="math notranslate nohighlight">\(Q\)</span> branches are perfectly balanced and contain no
+DC offset.
+Any electronics engineer knows this cannot be true: even within the same chip, we cannot have perfect alignment on two
+supposedly identical channels, and we’ll always have burden voltages. Any impairment will have an effect on the constellation, and
+it needs to be calibrated out. We illustrate <span class="math notranslate nohighlight">\(I/Q\)</span> impairments with a 16-QAM:</p>
+<div class="figure align-center" id="id9">
+<span id="iq-imbalance"></span><a class="reference internal image-reference" href="../../_images/iq_imbalance.svg"><img alt="../../_images/iq_imbalance.svg" src="../../_images/iq_imbalance.svg" /></a>
+<p class="caption"><span class="caption-text">Types of IQ imbalance</span><a class="headerlink" href="#id9" title="Permalink to this image"></a></p>
+</div>
+<div class="section" id="dc-offset">
+<h3>DC Offset<a class="headerlink" href="#dc-offset" title="Permalink to this headline"></a></h3>
+<p>The first type of impairment is the DC offset. If <span class="math notranslate nohighlight">\(I\)</span> and/or <span class="math notranslate nohighlight">\(Q\)</span> exhibit a DC offset, this will shift the whole constellation
+in a certain direction (constellation (b) with an offset of 0.25). A DC offset will have another nasty consequence: LO leakage.</p>
+<p>To show this let’s define</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    X_I' &amp;= X_I + DC \\
+    X_Q' &amp;= X_Q + DC
+\end{align}\end{split}\]</div>
+<p>Then if we mix with our LO we get</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    x_{RF}'(t) &amp;= (X_I + DC)\cos(\omega_0t) - (X_Q + DC)\sin(\omega_0t) \\
+              &amp;= \color{blue}X_I\cos(\omega_0t) - X_Q\sin(\omega_0t) \color{black}- \color{red}DC\Bigl(\cos(\omega_0t) - \sin(\omega_0t)\Bigl) \\
+              &amp;= \color{blue}x_{RF}(t) \color{black}- \color{red}DC\cos(\omega_0t)
+\end{align}\end{split}\]</div>
+<p>The output contains our modulated signal <span class="math notranslate nohighlight">\(x_{RF}(t)\)</span>, but it also contains the LO (unmodulated carrier), scaled by the
+DC offset value! This is a big issue for the receiver as when the signal is received and converted back to baseband, that LO component
+will be transformed back do a DC value which will then degrade the receiver performance (blocking). LO leakage can also cause the apparition
+of images by intermodulating with the wanted. The picture below shows a real-life example of LO leakage:</p>
+<div class="figure align-center" id="id10">
+<span id="iq-loleak"></span><a class="reference internal image-reference" href="../../_images/LO-leakage.png"><img alt="../../_images/LO-leakage.png" src="../../_images/LO-leakage.png" style="width: 653.5px; height: 261.5px;" /></a>
+<p class="caption"><span class="caption-text">Example of LO leakage</span><a class="headerlink" href="#id10" title="Permalink to this image"></a></p>
+</div>
+</div>
+<div class="section" id="gain-imbalance">
+<h3>Gain imbalance<a class="headerlink" href="#gain-imbalance" title="Permalink to this headline"></a></h3>
+<p>Gain imbalance happens when one the paths exhibits a different gain than the other one.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    X_I' &amp;= X_I \\
+    X_Q' &amp;= (1+\alpha)X_Q
+\end{align}\end{split}\]</div>
+<p>This will cause the constellation to <em>stretch</em> along an axis (constellation (c) with a gain of 1.5). For example, if we
+assume <span class="math notranslate nohighlight">\(I\)</span> to have a gain of 1 and <span class="math notranslate nohighlight">\(Q\)</span> to have a higher gain, the constellation will stretch along the
+<span class="math notranslate nohighlight">\(Q\)</span> axis.This is easy to guess since the <span class="math notranslate nohighlight">\(I\)</span> coordinate does not change but the <span class="math notranslate nohighlight">\(Q\)</span> coordinate
+increases in value.</p>
+</div>
+<div class="section" id="phase-imbalance">
+<h3>Phase imbalance<a class="headerlink" href="#phase-imbalance" title="Permalink to this headline"></a></h3>
+<p>Phase imbalance happens when one the paths (after mixing) exhibits a different phase than the other one. This will cause
+the constellation to <em>skew</em> (constellation (d) with a phase imbalance of 10 degrees). In that case both <span class="math notranslate nohighlight">\(I\)</span> and <span class="math notranslate nohighlight">\(Q\)</span>
+coordinates change. To understand why we need to do a little bit of math.</p>
+<p>Let’s define</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    x_{RF}(t) &amp;= X_I(t)\cos(\omega_0t) - X_Q(t)\sin(\omega_0t-\phi) \\
+              &amp;= X_I(t)\cos\omega_0t - X_Q(t)\Bigl[\sin\omega_0t\cos\phi + cos\omega_0t\sin\phi\Bigl] \\
+              &amp;= \cos\omega_0t\color{blue}\Bigl(X_I-X_Q\sin\phi\Bigl) \color{black} - \sin\omega_0t\color{red}\Bigl(X_Q\cos\phi\Bigl) \\
+\end{align}\end{split}\]</div>
+<p>We end up with an <strong>In-phase</strong> path which contains our original <span class="math notranslate nohighlight">\(X_I\)</span> but now also contains a scaled version of <span class="math notranslate nohighlight">\(X_Q\)</span>.
+This is equivalent to an altered baseband signal where <span class="math notranslate nohighlight">\(X_I' = X_I-X_Q\sin\phi\)</span>. Similarly for the <strong>Quadrature</strong> path
+we have an equivalent <span class="math notranslate nohighlight">\(X_Q' = X_Q\cos\phi\)</span>.</p>
+<p>You can play with the provided python script to see the effect of <span class="math notranslate nohighlight">\(I/Q\)</span> impairments on a constellation.</p>
+</div>
+</div>
+<div class="section" id="evm-vector-error-magnitude">
+<h2>EVM (Vector Error Magnitude)<a class="headerlink" href="#evm-vector-error-magnitude" title="Permalink to this headline"></a></h2>
+<p>On top of potential <span class="math notranslate nohighlight">\(I/Q\)</span> impairments that can occur at the transmitter or at the receiver, our symbols can also get distorted
+when they are transmitted over-the-air: from additional white noise to reflections/diffractions,
+or interferers, the symbol we receive at the end will surely not be exactly where we expect it.</p>
+<div class="figure align-center" id="id11">
+<span id="channel"></span><a class="reference internal image-reference" href="../../_images/iq_channel.svg"><img alt="../../_images/iq_channel.svg" src="../../_images/iq_channel.svg" /></a>
+<p class="caption"><span class="caption-text">Transmission through a channel</span><a class="headerlink" href="#id11" title="Permalink to this image"></a></p>
+</div>
+<p>In the <span class="math notranslate nohighlight">\(I/Q\)</span> plane, we can plot a vector from the expected or wanted symbol, and another vector from the measured symbol.
+A third vector connecting these two symbols is called the <strong>Error Vector</strong>.</p>
+<div class="figure align-center" id="id12">
+<span id="evm"></span><a class="reference internal image-reference" href="../../_images/iq_evm.svg"><img alt="../../_images/iq_evm.svg" src="../../_images/iq_evm.svg" /></a>
+<p class="caption"><span class="caption-text">EVM phasor diagram</span><a class="headerlink" href="#id12" title="Permalink to this image"></a></p>
+</div>
+<p>The differences on the values of <span class="math notranslate nohighlight">\(I\)</span> and <span class="math notranslate nohighlight">\(Q\)</span> for the wanted and measured vectors allow us the calculate the length of
+the error vector called the <strong>Error Vector Magnitude</strong>, or EVM, defined as:</p>
+<div class="math notranslate nohighlight">
+\[EVM = \sqrt{I_{err}^2+Q_{err}^2}\]</div>
+<p>The EVM, a sort of SNR figure of merit, is often expressed in <span class="math notranslate nohighlight">\(\%\)</span> or in <span class="math notranslate nohighlight">\(dB\)</span>. Be careful the decibel value is computed using 20log(…)
+and not 10log(…).</p>
 </div>
 </div>
 

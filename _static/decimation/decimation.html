@@ -53,8 +53,8 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Decimation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-concept">The concept</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#aliasing-issue">Aliasing issue</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#an-example">An example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-aliasing-problem">The aliasing problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aliasing-example">Aliasing example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#snr-improvement">SNR improvement</a></li>
 </ul>
 </li>
@@ -104,9 +104,14 @@ represented in block diagrams as shown below:</p>
 <span id="decbloc"></span><a class="reference internal image-reference" href="../../_images/decimBlock.svg"><img alt="../../_images/decimBlock.svg" src="../../_images/decimBlock.svg" /></a>
 <p class="caption"><span class="caption-text">Decimation block</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
 </div>
+<p>In Python the decimation
+operation can be done automatically using a dedicated function from Scipy:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="n">y</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">decimate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">decimation_factor</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="s1">&#39;fir&#39;</span><span class="p">)</span>
+</span></pre></div>
 </div>
-<div class="section" id="aliasing-issue">
-<h2>Aliasing issue<a class="headerlink" href="#aliasing-issue" title="Permalink to this headline"></a></h2>
+</div>
+<div class="section" id="the-aliasing-problem">
+<h2>The aliasing problem<a class="headerlink" href="#the-aliasing-problem" title="Permalink to this headline"></a></h2>
 <p>Say we are sampling at Frequency <span class="math notranslate nohighlight">\(Fs\)</span>: the Nyquist bandwidth will extend from DC to <span class="math notranslate nohighlight">\(\frac{Fs}{2}\)</span>,
 this is known as the <strong>Nyquist-Shannon sampling theorem</strong>.
 This theorem states that in order to sample a signal correctly, the sampling
@@ -123,14 +128,15 @@ our new Nyquist bandwidth (Alias <span class="math notranslate nohighlight">\(A\
 In order to get rid of potential aliases, we must first implement a low-pass filter (otherwise known as anti-aliasing
 filter) prior to the downsampling operation.</p>
 </div>
-<div class="section" id="an-example">
-<h2>An example<a class="headerlink" href="#an-example" title="Permalink to this headline"></a></h2>
+<div class="section" id="aliasing-example">
+<h2>Aliasing example<a class="headerlink" href="#aliasing-example" title="Permalink to this headline"></a></h2>
 <p>As an example, we generate two tones sampled at a rate of 10 kHz:
 One tone at 100 Hz and another tone at 700 Hz. The time-domain representation of that signal is given in Plot 1
 and its power spectrum is given in Plot 2. In this case, the Nyquist bandwidth extends from 0 to 5 kHz.</p>
 <div class="pythoncode admonition">
 <p class="admonition-title">The full python code for this example is available</p>
 <p><a class="reference download internal" download="" href="../../_downloads/d33885603ab0c1424b9830a39d5967bf/aliasing.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">here</span></code></a></p>
+<p>Validated with: Python 3.6.7 - Numpy 1.19.4 - Scipy 1.5.4 - Matplotlib 3.3.3</p>
 </div>
 <div class="figure align-center" id="id3">
 <span id="figaliasexperiment"></span><a class="reference internal image-reference" href="../../_images/aliasing_python.svg"><img alt="../../_images/aliasing_python.svg" src="../../_images/aliasing_python.svg" /></a>
@@ -139,7 +145,7 @@ and its power spectrum is given in Plot 2. In this case, the Nyquist bandwidth e
 <p>Then we downsample that signal by dropping 1 out of 10 samples. The new sampling rate becomes 1 kHz
 and the nyquist bandwidth is reduced to 500 Hz, which should leave us only with the 100 Hz tone.
 The resulting power spectrum is shown on plot 3.</p>
-<p>We can see our 100 Hz tone, but we now have an uninvited guest showing up at 300 Hz, and that tone shouldn’t exist.
+<p>We can see our 100 Hz tone, but we now have an <strong>uninvited guest showing up at 300 Hz</strong>, and that tone shouldn’t exist.
 Now that our Nyquist bandwidth ranges from 0 to 500 Hz (1st Nyquist zone), the 2nd Nyquist zone ranges
 from 500 Hz to 1000 Hz and so on. The 700 Hz tone is in the 2nd Nyquist zone; and every even Nyquist zone will fold back
 flipped onto the 1st one. Thus our 700Hz tone is now showing up on 1000-700 = 300 Hz:</p>
@@ -148,29 +154,29 @@ flipped onto the 1st one. Thus our 700Hz tone is now showing up on 1000-700 = 30
 <p class="caption"><span class="caption-text">Folding mechanism</span><a class="headerlink" href="#id4" title="Permalink to this image"></a></p>
 </div>
 <p>So we implement a low-pass filter first to eliminate the unwanted tone at 700 Hz, then we downsample and the
-result can be seen in Plot 4, where the 300 Hz alias has disappeared. In Python the decimation
-operation can be done automatically using a dedicated function from Scipy:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="n">y</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">decimate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">decimation_factor</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="s1">&#39;fir&#39;</span><span class="p">)</span>
-</span></pre></div>
-</div>
+result can be seen in Plot 4, where the 300 Hz alias has disappeared.</p>
 </div>
 <div class="section" id="snr-improvement">
 <h2>SNR improvement<a class="headerlink" href="#snr-improvement" title="Permalink to this headline"></a></h2>
+<div class="pythoncode admonition">
+<p class="admonition-title">The full python code for this example is available</p>
+<p><a class="reference download internal" download="" href="../../_downloads/4e2126c4e8cdbceedf5bd3c4ea260c2d/ook.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">here</span></code></a></p>
+<p>Validated with: Python 3.6.7 - Numpy 1.19.4 - Scipy 1.5.4 - Matplotlib 3.3.3</p>
+</div>
 <p>Decimation will also improve the Signal-to-Noise Ratio (SNR): indeed, as we are reducing
 the bandwidth, we are reducing the noise. This type of improvement is called a processing gain,
 and its value in dB can be calculated by the formula:</p>
 <div class="math notranslate nohighlight">
 \[G_{dB} = 10log_{10} \left(\frac{Fs_{old}}{Fs_{new}}\right)\]</div>
 <p>We can see below an example of decimation on a signal acquired with the RTL: the
-signal was sampled at 2 MHz then decimated by 10 to 200 kHz. We can clearly see the noise reduction
-on the IQ traces.</p>
+signal was sampled at 2 MHz then decimated by 10 to 200 kHz. The noise reduction is visible
+on the IQ traces, and the spectrum is displayed as well to show the reduced bandwidth.</p>
 <div class="figure align-center" id="id5">
-<span id="figdeciq"></span><a class="reference internal image-reference" href="../../_images/IQ_decimated.PNG"><img alt="../../_images/IQ_decimated.PNG" src="../../_images/IQ_decimated.PNG" style="width: 1260.0px; height: 302.0px;" /></a>
+<span id="figdeciq"></span><a class="reference internal image-reference" href="../../_images/IQ_decimated.svg"><img alt="../../_images/IQ_decimated.svg" src="../../_images/IQ_decimated.svg" /></a>
 <p class="caption"><span class="caption-text">RTL-SDR decimated IQ</span><a class="headerlink" href="#id5" title="Permalink to this image"></a></p>
 </div>
 <p>The SNR improvement is <span class="math notranslate nohighlight">\(10log_{10} \left(\frac{2M}{200k}\right) = 10dB\)</span>. So just like that, we’ve reduced our noise
-by 10dB. Additionally, since we now have 10x less samples, it will result in a decreased processing load for
-whatever step comes next.</p>
+by 10dB. Additionally, since we now have 10x less samples, the next processing steps will run with reduced computing power needs.</p>
 <div class="admonition-but-then-we-might-ask-ourselves admonition">
 <p class="admonition-title">But then we might ask ourselves…</p>
 <p><strong>Why go through all this trouble</strong>?</p>

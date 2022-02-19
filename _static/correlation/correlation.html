@@ -53,8 +53,9 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../decimation/decimation.html">Decimation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Correlation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-concept">The concept</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#matched-filtering">Matched filtering</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pattern-detection">Pattern detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#binary-sequence-detection">Binary sequence detection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#noise-autocorrelation-properties">Noise autocorrelation properties</a></li>
 </ul>
 </li>
@@ -89,79 +90,95 @@
              
   <div class="section" id="correlation">
 <h1>Correlation<a class="headerlink" href="#correlation" title="Permalink to this headline"></a></h1>
+<div class="section" id="the-concept">
+<h2>The concept<a class="headerlink" href="#the-concept" title="Permalink to this headline"></a></h2>
 <p>Correlation (or more specifically <a class="reference external" href="https://en.wikipedia.org/wiki/Cross-correlation">cross-correlation</a>) is one of the main tools used in DSP. Mathematically speaking,
-the (discrete) correlation between two signals <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(h\)</span> is given by:</p>
+the (discrete) correlation between two signals <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(h\)</span> of length <span class="math notranslate nohighlight">\(m\)</span> is given by:</p>
 <div class="math notranslate nohighlight">
 \[x_{corr}[n] = \sum_{m=-\infty}^{m=+\infty} x[m] h[m-n]\]</div>
-<p>where <span class="math notranslate nohighlight">\(n\)</span> represents a time delay. It looks very similar to convolution,
-but it’s ultimately not the same thing. What correlation between two signals does
+<p>where <span class="math notranslate nohighlight">\(n\)</span> represents a time delay. The cross-correlation will compute the sum
+of overlaping signals for different time-lags <span class="math notranslate nohighlight">\(n\)</span>, by effectively sweeping one across the other.
+It looks very similar to convolution, but it’s ultimately not the same thing. This short video illustrates the process
+(Correlation output normalised to 1):</p>
+<center>
+    <video width=400px controls autoplay loop muted>
+        <source src="autocorr_animation.mp4" type="video/mp4"   >
+    Your browser does not support the video tag.
+    </video>
+</center><p>What correlation between two signals does
 is essentially ‘measuring’ how much the signals are similar to each other. The more
 similarities, the higher the correlation output. This is very
-useful for a number of things, and a few pratical examples are presented below.</p>
+useful for a number of things, and a few pratical examples are presented in the article.</p>
 <p>Correlation can be done in python with a dedicated function from scipy:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="n">correlation_result</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">correlate</span><span class="p">(</span><span class="n">signal_1</span><span class="p">,</span> <span class="n">signal_2</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="n">correlation_result</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">correlate</span><span class="p">(</span><span class="n">signal_1</span><span class="p">,</span> <span class="n">signal_2</span><span class="p">,</span> <span class="s2">&quot;same&quot;</span><span class="p">)</span>
 </span></pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The “same” option centers the correlation result’s 0-lag instant on the middle of signal_1
+and makes the result’s length the same as signal_1.</p>
+</div>
 </div>
 <div class="section" id="matched-filtering">
 <h2>Matched filtering<a class="headerlink" href="#matched-filtering" title="Permalink to this headline"></a></h2>
 <p>Matched fitering is the process of correlating an unknown signal with a reference
 waveform. The reference waveform should be chosen to match a typical pattern or pulse shape
-that we are expecting in the incoming signal. The matched filter acts as the optimal
+that we are expecting in the incoming signal. The matched filter acts as the <strong>optimal
 linear filter which
-allows maximizing the SNR in presence of AWGN noise.</p>
-<p>Let’s take the most simple example: if we consider a simple binary stream of data,
-the reference waveform would be a pulse of width equal to a single bit.
+allows maximizing the SNR in presence of AWGN noise.</strong></p>
+<p>Let’s take the most simple example: if we are expecting a square wave representing a binary stream,
+the reference waveform would be a pulse of shape equal to that of a single bit.
 This waveform is the famous rectangular function, defined by:</p>
 <div class="math notranslate nohighlight">
 \[rect(t) = \Pi(t) = \Biggl\lbrace
 ^{{\displaystyle 1 \text{, if } \biggl\lvert\frac{t-t_{0}}{T}\biggl\rvert &lt; \frac{1}{2}}}
 _{\displaystyle{0 \text{, elsewhere }}}\]</div>
 <p>with <span class="math notranslate nohighlight">\(t_{0}\)</span> the center position of the pulse (i.e. its delay) and <span class="math notranslate nohighlight">\(T\)</span> the pulse width.
-The autocorrelation of this function is a triangular pulse:</p>
+The autocorrelation of this function is a triangular pulse of width <span class="math notranslate nohighlight">\(2T\)</span>:</p>
 <div class="figure align-center" id="id1">
 <span id="figrect"></span><a class="reference internal image-reference" href="../../_images/rectCorr.svg"><img alt="../../_images/rectCorr.svg" src="../../_images/rectCorr.svg" /></a>
 <p class="caption"><span class="caption-text">Rectangular function and its autocorrelation</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
 </div>
-<p>Now let’s try with a real OOK-modulated signal recorded with the RTL-SDR to illustrate:</p>
+<p>Let’s try with a real OOK-modulated signal recorded with the RTL-SDR to illustrate:</p>
 <div class="pythoncode admonition">
 <p class="admonition-title">The full python code for this example is available</p>
-<p><a class="reference download internal" download="" href="../../_downloads/af48c20a8c30913ba815796cd22d23e2/matchedFilter.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">here</span></code></a></p>
+<p><a class="reference download internal" download="" href="../../_downloads/4e2126c4e8cdbceedf5bd3c4ea260c2d/ook.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">here</span></code></a></p>
 <p>Validated with: Python 3.6.7 - Numpy 1.19.4 - Scipy 1.5.4 - Matplotlib 3.3.3</p>
 </div>
 <div class="figure align-center" id="id2">
 <span id="figook1"></span><a class="reference internal image-reference" href="../../_images/matchedFiltering1.svg"><img alt="../../_images/matchedFiltering1.svg" src="../../_images/matchedFiltering1.svg" /></a>
 <p class="caption"><span class="caption-text">OOK signal</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
 </div>
-<p>The blue trace represents our signal. While our trained human eye can easily distinguish the individual bits
+<p>The blue trace represents our OOK signal. While our trained human eye can easily distinguish the individual bits
 we have to admit the trace looks awful. If we decided to slice the signal using 0.5 (amplitude level)
 as the decision threshold, it wouldn’t work. There is too much noise, we would end up with
 a lot of glitches, which is what we see in the orange trace. So we define a reference pulse equivalent to one bit (in green),
-and we correlate it with the recorded signal. This gives us the match-filtered data.</p>
+and we correlate it with the recorded signal. This gives us the match-filtered data:</p>
 <div class="figure align-center" id="id3">
 <span id="figook2"></span><a class="reference internal image-reference" href="../../_images/matchedFiltering3.svg"><img alt="../../_images/matchedFiltering3.svg" src="../../_images/matchedFiltering3.svg" /></a>
 <p class="caption"><span class="caption-text">Match-filtered OOK</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
 </div>
-<p>The correlation gives us the expected triangular shape, and has gotten rid of most of the noise. On top of that,
-each peak of a triangle indicates the middle of a bit, which will be very useful
-when using timing error detection techniques. Slicing the output of the correlation now gives us a clean and faithful
-representation of the intended bitstream.</p>
+<p>The correlation gives us the expected triangular shape, and has gotten rid of most of the noise. Using the Scipy correlation function with
+the “same” option, each peak of a triangle indicates the middle of a bit. Slicing the output of the correlation now gives us
+a clean and faithful representation of the intended bitstream.</p>
 <p>To show the power of matched filtering, we can drown the signal in noise
-to the point where it’s barely recognisable:</p>
+to the point where it’s barely recognisable and still recover what we want:</p>
 <div class="figure align-center" id="id4">
 <span id="figook3"></span><a class="reference internal image-reference" href="../../_images/matchedFiltering2.svg"><img alt="../../_images/matchedFiltering2.svg" src="../../_images/matchedFiltering2.svg" /></a>
 <p class="caption"><span class="caption-text">Noisy signal</span><a class="headerlink" href="#id4" title="Permalink to this image"></a></p>
 </div>
-<p>As we can see, the output of the correlation is very similar to the one obtained from the original signal.
-It’s a little bit more noisy and will require further processing to clean-up, but nothing insurmontable.</p>
+<p>Even with significant amount of noise, the output of the correlation is very similar to the one obtained from the original signal.</p>
 </div>
-<div class="section" id="pattern-detection">
-<h2>Pattern detection<a class="headerlink" href="#pattern-detection" title="Permalink to this headline"></a></h2>
+<div class="section" id="binary-sequence-detection">
+<h2>Binary sequence detection<a class="headerlink" href="#binary-sequence-detection" title="Permalink to this headline"></a></h2>
+<p>We can repurpose what was shown in the matched filtering section, with a slightly different objective: finding a binary sequence
+within a binary stream.</p>
 <div class="pythoncode admonition">
 <p class="admonition-title">The full python code for this example is available</p>
 <p><a class="reference download internal" download="" href="../../_downloads/3261e21563af52f15af3c5ce3a7fb61b/syncWordDetection.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">here</span></code></a></p>
 <p>Validated with: Python 3.6.7 - Numpy 1.19.4 - Scipy 1.5.4 - Matplotlib 3.3.3</p>
 </div>
-<p>In simple protocols used in embedded wireless systems, radio frames are often built this way:</p>
+<p>Quite often in simple protocols used in embedded wireless systems, radio frames are built this way:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 44%" />
@@ -179,17 +196,16 @@ It’s a little bit more noisy and will require further processing to clean-up, 
 </tr>
 </tbody>
 </table>
-<p>The preamble gives time to the receiver to adjust its mechanisms of
-Gain Control (AGC), Frequency Error Correction (FEC), etc. and also allows it to synchronize
+<p>The preamble gives time to the receiver to adjust its internal gain stages, etc. and also allows it to synchronize
 its clock on the incoming signal. The problem is that the receiver can’t know based on the preamble
 alone when the ‘useful’ message actually starts.</p>
-<p>That’s where the synchronisation word come in: it’s a specific binary sequence which marks
-the beginning of the radio frame. So once the receiver has identified a preamble and locked onto it,
+<p>That’s where the synchronisation word comes in: it’s a specific binary sequence which marks
+the beginning of the radio frame. Once the receiver has identified a preamble and locked onto it,
 it will begin looking for the sync word so it knows where it needs to start decoding the message.
 To do so we could scan for the sync word by doing a bit-by-bit comparison with the incoming binary
 stream, but that wouldn’t leave any room for errors. While this works in ideal conditions,
 in the real world the signal will be noisy so some bits might be corrupted.
-By doing a correlation, we can instead estimate a likelyhood that we found the right sequence.</p>
+By doing a correlation, we can instead estimate a <strong>likelyhood</strong> that we found the right sequence.</p>
 <p>For example, let’s say we have the binary sequence:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
 <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
@@ -222,7 +238,7 @@ be the case and more complex methods of selection might be required.</p>
 to each other. So if you correlate a signal with itself, what does it measure? It measures a signal’s dependencies
 within itself, in other words repeating patterns, regularities, specific frequency content.</p>
 <p>But white noise is <strong>supposed to be perfectly random</strong>, i.e no repeating pattern. Therefore, at any point in time,
-noise should produce a zero-output autocorrelation <strong>except</strong> when it’s exactly aligned with itself. Below is an example
+<strong>noise should produce a zero-output autocorrelation except when it’s exactly aligned with itself</strong>. Below is an example
 of noise measured with an RTL-SDR on the 868MHz ISM band.</p>
 <div class="pythoncode admonition">
 <p class="admonition-title">The full python code for this example is available</p>
@@ -237,15 +253,15 @@ of noise measured with an RTL-SDR on the 868MHz ISM band.</p>
 <span id="fignoisecorr"></span><a class="reference internal image-reference" href="../../_images/noiseAutoCorr.svg"><img alt="../../_images/noiseAutoCorr.svg" src="../../_images/noiseAutoCorr.svg" /></a>
 <p class="caption"><span class="caption-text">Noise autocorrelation</span><a class="headerlink" href="#id7" title="Permalink to this image"></a></p>
 </div>
-<p>As we can see on the left-hand side picture, the autocorrelation seems to be 0 except at the center, where the signal
+<p>On the left-hand side picture, the autocorrelation seems to be 0 except at the center, where the signal
 perfectly aligns with itself during the correlation process. A zoom is performed and displayed on the right-hand side
-picture, along with each sample graphically represented by a dot. We can clearly that a <strong>single</strong> sample presents a
-high energy, while the others are pretty much at 0.</p>
+picture, along with each sample graphically represented by a dot. We can clearly see that a <strong>single</strong> sample presents a
+high energy, while all the other samples are close to 0.</p>
 <p>Interestingly, this also shows that when we do the assumption that noise is AWGN in order to simplify circuit or system
 analysis, it’s actually very close to reality. This practical example shows that background electromagnetic noise does in fact
 behave like AWGN.</p>
-<p>This particular behaviour is used in many cases, like sync word detection, where we will try to use codes that
-have strong autocorrelation properties (to produce a high-energy peak) and weak cross-correlation properties
+<p>This particular behaviour is used in many cases, like sync word detection, where we will try to use <strong>codes that
+have strong autocorrelation properties</strong> (to produce a high-energy peak) and <strong>weak cross-correlation properties</strong>
 (to avoid being mistaken for other codes). Some examples are Barker codes used in WiFi or Zadoff-Chu sequences used in
 cellular (4G/5G).</p>
 </div>

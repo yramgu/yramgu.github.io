@@ -138,7 +138,7 @@ by another frequency :math:`f_1` to the left so we do
 
 .. math::
 
-    p(t) = e^{2 \pi (f_0 - f_1) t} = e^{(2 \pi f_0 t) - (2 \pi f_1 t)} = e^{2 \pi f_0 t} *  e^{- 2 \pi f_1 t}
+    p(t) = e^{2 \pi (f_0 - f_1) t} = e^{(2 \pi f_0 t) - (2 \pi f_1 t)} = e^{2 \pi f_0 t} \times  e^{- 2 \pi f_1 t}
 
 If we apply this to our BPSK waveform, we multiply it by an exponential with frequency -12kHz and we get our spectrum shifted near DC:
 
@@ -191,8 +191,8 @@ The input signal goes into a quadrature mixer. On the :math:`I` arm we have:
 .. math::
 
     \begin{align}
-        x_I(t)& = m_{bb}(t).cos(\omega_0t + \theta).2cos(\omega_0t + \phi) \\
-               &= m_{bb}(t).\Bigl[cos(\theta - \phi) + cos(2 \omega_0 t + \theta + \phi)\Bigl]
+        x_I(t)& = m_{bb}(t)cos(\omega_0t + \theta) \times 2cos(\omega_0t + \phi) \\
+               &= m_{bb}(t)\Bigl[cos(\theta - \phi) + cos(2 \omega_0 t + \theta + \phi)\Bigl]
     \end{align}
 
 The double frequency term is eliminated by the low-pass filter and we are left with 
@@ -209,8 +209,8 @@ Likewise on the :math:`Q` arm we have:
 .. math::
 
     \begin{align}
-        x_Q(t)& = m_{bb}(t).cos(\omega_0t + \theta).-2sin(\omega_0t + \phi) \\
-              & = m_{bb}(t).\Bigl[sin(\theta - \phi) - sin(2 \omega_0 t + \theta + \phi)\Bigl]
+        x_Q(t)& = m_{bb}(t)cos(\omega_0t + \theta) \times -2sin(\omega_0t + \phi) \\
+              & = m_{bb}(t)\Bigl[sin(\theta - \phi) - sin(2 \omega_0 t + \theta + \phi)\Bigl]
     \end{align}
 
 The double frequency term is eliminated by the low-pass filter and we are left with 
@@ -225,7 +225,7 @@ Then we multiply the I and Q branch together so we get:
 
     \begin{align}
         x_{LF}(t) &= m_{bb}^2(t)cos(\theta - \phi)sin(\theta - \phi) \\ 
-                  &= m_{bb}^2(t)sin(2(\theta-\phi))
+                  &= m_{bb}^2(t)sin\Bigl(2(\theta-\phi)\Bigl)
     \end{align}
 
 For a BPSK, :math:`m_{bb}^2(t) = 1`, so we end up up with :math:`x_{LF}(t) = sin(2(\theta-\phi))`. The error
@@ -263,8 +263,8 @@ The proportional and integral gains :math:`K_p` and :math:`K_I` of the loop filt
 .. math::
 
     \begin{align}
-        K_p &\approx \frac{1}{K_D K_0}.\frac{4\zeta}{\zeta + \frac{1}{4\zeta}}.\frac{B_n}{F_s} \\
-        K_I &\approx \frac{1}{K_D K_0}.\Biggl(\frac{4}{\zeta + \frac{1}{4\zeta}}\Biggl)^2.\Biggl(\frac{B_n}{F_s}\Biggl)^2 
+        K_p &\approx \frac{1}{K_D K_0}\times\frac{4\zeta}{\zeta + \frac{1}{4\zeta}}\times\frac{B_n}{F_s} \\
+        K_I &\approx \frac{1}{K_D K_0}\times\Biggl(\frac{4}{\zeta + \frac{1}{4\zeta}}\Biggl)^2\times\Biggl(\frac{B_n}{F_s}\Biggl)^2 
     \end{align}
 
 with
@@ -394,7 +394,7 @@ phase, and a '0' is encoded by changing phase. Applying the reverse encoding is 
 
 .. code-block:: python
 
-    # apply reverse differential encoding
+    # apply reverse differential encoding, NRZ output format
     decoded_bits = []
     previous_bit = 0
     for bit in bits:
@@ -403,12 +403,20 @@ phase, and a '0' is encoded by changing phase. Applying the reverse encoding is 
             previous_bit = bit
             decoded_bits.append(-1)
 
+.. code-block:: python
+
+    decoded_bit = [-1, 1, 1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 
+                    1, 1, 1, 1, 1, -1, -1, 1, 1, -1, 1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, -1, 1, -1, 
+                    1, 1, -1, 1, 1, -1, 1, 1, 1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1, 1, 1, 1, -1, -1, 1, -1, 1, -1, 1, 
+                    1, 1, 1, 1, 1, 1, -1, 1, -1, 1, 1, 1, -1, 1, -1, 1, 1, -1, 1, -1, -1, -1, -1, 1, -1, 1, -1, 1,
+                    -1, 1, 1, -1, -1, -1, -1, -1, 1, 1, -1]
+
 After removing the differential encoding, we correlate the resulting  bit stream with the binary representation of the 
 sync word:
 
 .. code-block:: python
 
-    0xF9A8 = [1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0]
+    0xF9A8 = [1, 1, 1, 1, 1, -1, -1, 1, 1, -1, 1, -1, 1, -1, -1, -1]
 
 .. _bpsk_syncWord:
 .. figure:: bpsk-syncWord.svg
@@ -418,7 +426,7 @@ sync word:
     Correlation of data with sync word
 
 We detect a clear maximum at index 27. Since the word is 16-bit long, the payload starts at index 27+16/2=35.
-Our payload is 8 bytes long so we extract 64 bits starting at index 35 and we get:
+Our payload is 8 bytes long so we extract 64 bits starting at index 35 and we get (going back to unipolar format):
 
 .. code-block:: python
 

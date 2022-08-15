@@ -59,7 +59,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../BPSK/BPSK.html">BPSK demodulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../DSSS/DSSS.html">Direct-Sequence Spread Spectrum (DSSS)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../DSSS/DSSS.html">Spread Spectrum</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">DSP tools</span></p>
 <ul>
@@ -189,14 +189,13 @@ circuits and/or processors!</p>
     a(t)\cos\Bigl(\omega_0t+\phi(t)\Bigl) &amp;= \color{blue}a(t)\cos\Bigl(\phi(t)\Bigl)\color{black}\cos(\omega_0t) - \color{red}a(t)\sin\Bigl(\phi(t)\Bigl)\color{black}\sin(\omega_0t) \\
                                           &amp;= \color{blue}X_I(t)\color{black}\cos(\omega_0t) - \color{red}X_Q(t)\color{black}\sin(\omega_0t)
 \end{align}\end{split}\]</div>
-<p>If we want to perform arbitrary amplitude and phase modulation we need two low-frequency terms <span class="math notranslate nohighlight">\(a(t)\cos(\phi(t))\)</span> and <span class="math notranslate nohighlight">\(a(t)\sin(\phi(t))\)</span>.
-They are in fact respectively the <span class="math notranslate nohighlight">\(X_I\)</span> and <span class="math notranslate nohighlight">\(X_Q\)</span> components of the baseband signal represented in the <span class="math notranslate nohighlight">\(I/Q\)</span> plane, as defined in the “Basics” section.
+<p>If we want to perform arbitrary amplitude and phase modulation we only need to act on the <strong>amplitude</strong> of a fixed-frequency LO.
+The LO is split into two orthogonal components <span class="math notranslate nohighlight">\(\cos(\omega_0t)\)</span> and <span class="math notranslate nohighlight">\(\sin(\omega_0t)\)</span>. The two amplitude terms
+<span class="math notranslate nohighlight">\(a(t)\cos(\phi(t))\)</span> and <span class="math notranslate nohighlight">\(a(t)\sin(\phi(t))\)</span> are in fact respectively the <span class="math notranslate nohighlight">\(X_I\)</span> and <span class="math notranslate nohighlight">\(X_Q\)</span> components of the baseband signal represented in the <span class="math notranslate nohighlight">\(I/Q\)</span> plane, as defined in the “Basics” section.
 Since they are low frequency signals, they would be fairly easy to generate with a DAC.</p>
-<p>But now the carrier wave has been split into two terms <span class="math notranslate nohighlight">\(\cos(\omega_0t)\)</span> and <span class="math notranslate nohighlight">\(-\sin(\omega_0t)\)</span>, so we cannot use
-the simple modulator circuit shown above. We need a new circuit: the quadrature modulator.</p>
-<p>It becomes apparent that we can transmit two independant information, <span class="math notranslate nohighlight">\(X_I\)</span> and <span class="math notranslate nohighlight">\(X_Q\)</span>, on two different carriers
-that have the same frequency but are orthogonal to each other. These two independant components can individually be
-recovered at the receiver by means of a quadrature demodulator.</p>
+<p>As the carrier wave has been split into two terms <span class="math notranslate nohighlight">\(\cos(\omega_0t)\)</span> and <span class="math notranslate nohighlight">\(-\sin(\omega_0t)\)</span>, we cannot use
+the simple modulator circuit shown above. We need a new circuit: the quadrature modulator. It will allow recovery of both
+<span class="math notranslate nohighlight">\(X_I\)</span> and <span class="math notranslate nohighlight">\(X_Q\)</span> components despite the fact we are really transmitting only one sinewave.</p>
 <p>So how do we perform the quadrature modulation in an actual circuit?</p>
 <div class="figure align-center" id="id4">
 <span id="complex-mixing"></span><a class="reference internal image-reference" href="../../_images/complex_mixing.svg"><img alt="../../_images/complex_mixing.svg" src="../../_images/complex_mixing.svg" /></a>
@@ -250,7 +249,7 @@ but is asymetrical:</p>
     x_{bb}(t) &amp;= X_I(t) + jX_Q(t) \\
               &amp;= a(t)e^{j\phi(t)}
 \end{align}\end{split}\]</div>
-<p>Staying in the complex domain, we mix it with a complex sinusoid at frequency <span class="math notranslate nohighlight">\(\omega_0\)</span>:</p>
+<p>Staying in the complex domain, we mix it with a complex sinusoid (the carrier) at frequency <span class="math notranslate nohighlight">\(\omega_0\)</span> to perform the modulation:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{align}
     x_{RF}(t) &amp;= x_{bb}(t)e^{j\omega_0t} \\
@@ -291,14 +290,14 @@ it needs to be calibrated out. We illustrate <span class="math notranslate nohig
 <div class="section" id="dc-offset">
 <h3>DC Offset<a class="headerlink" href="#dc-offset" title="Permalink to this headline"></a></h3>
 <p>The first type of impairment is the DC offset. If <span class="math notranslate nohighlight">\(I\)</span> and/or <span class="math notranslate nohighlight">\(Q\)</span> exhibit a DC offset, this will shift the whole constellation
-in a certain direction (constellation (b) with an offset of 0.25). A DC offset will have another nasty consequence: LO leakage.</p>
+in a certain direction (constellation (b) with an offset of 0.25 on both channels). A DC offset will have another nasty consequence: LO leakage.</p>
 <p>To show this let’s define</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{align}
     X_I' &amp;= X_I + DC \\
     X_Q' &amp;= X_Q + DC
 \end{align}\end{split}\]</div>
-<p>Then if we mix with our LO we get</p>
+<p>Note that the DC offset will in reality be different for both channels. Then if we mix with our LO we get</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{align}
     x_{RF}'(t) &amp;= (X_I + DC)\cos(\omega_0t) - (X_Q + DC)\sin(\omega_0t) \\
@@ -364,7 +363,7 @@ A third vector connecting these two symbols is called the <strong>Error Vector</
 the error vector called the <strong>Error Vector Magnitude</strong>, or EVM, defined as:</p>
 <div class="math notranslate nohighlight">
 \[EVM = \sqrt{I_{err}^2+Q_{err}^2}\]</div>
-<p>The EVM, a sort of SNR figure of merit, is often expressed in <span class="math notranslate nohighlight">\(\%\)</span> or in <span class="math notranslate nohighlight">\(dB\)</span>. Be careful the decibel value is computed using 20log(…)
+<p>The EVM, a sort of SNR figure of merit, is often expressed in <span class="math notranslate nohighlight">\(\%\)</span> or in <span class="math notranslate nohighlight">\(dB\)</span>. Be careful as the decibel value is computed using 20log(…)
 and not 10log(…).</p>
 </div>
 </div>

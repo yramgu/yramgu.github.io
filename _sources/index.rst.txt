@@ -21,8 +21,8 @@ What will you find here?
 
 This website is a collection of articles related to practical radio engineering, focused on SDR 
 and simple experiments I made using Python. It's not meant to provide mathematical rigour, but rather
-illustrate concepts in a pratical way. All the scripts are provided so that you can run them at home
-yourself.
+illustrate concepts in a practical way. All the scripts used for these articles are provided so that you can run them 
+yourself and experiment.
 
 
 Licenses

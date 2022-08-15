@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Direct-Sequence Spread Spectrum (DSSS) &mdash; Standing Waves</title>
+  <title>Spread Spectrum &mdash; Standing Waves</title>
       <link rel="stylesheet" href="../pygments.css" type="text/css" />
       <link rel="stylesheet" href="../css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../my_theme.css" type="text/css" />
@@ -15,6 +15,7 @@
         <script src="../jquery.js"></script>
         <script src="../underscore.js"></script>
         <script src="../doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -46,7 +47,20 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../IQ-modulation/IQ-modulation.html">I/Q modulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../BPSK/BPSK.html">BPSK demodulation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Direct-Sequence Spread Spectrum (DSSS)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Spread Spectrum</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basics">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cdma">CDMA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#python-example">Python example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#messages">Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#choosing-the-right-spreading-codes">Choosing the right spreading codes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spreading-the-message">Spreading the message</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#de-spreading">De-spreading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#limitations">Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">DSP tools</span></p>
 <ul>
@@ -68,7 +82,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Direct-Sequence Spread Spectrum (DSSS)</li>
+      <li>Spread Spectrum</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -77,11 +91,202 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="direct-sequence-spread-spectrum-dsss">
-<h1>Direct-Sequence Spread Spectrum (DSSS)<a class="headerlink" href="#direct-sequence-spread-spectrum-dsss" title="Permalink to this headline"></a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Article under construction</p>
+  <div class="section" id="spread-spectrum">
+<h1>Spread Spectrum<a class="headerlink" href="#spread-spectrum" title="Permalink to this headline"></a></h1>
+<div class="section" id="basics">
+<h2>Basics<a class="headerlink" href="#basics" title="Permalink to this headline"></a></h2>
+<p>Spread-spectrum is a modulation/encoding technique used to make signals more resilient to noise and/or interference.
+There are multiple types of spread-spectrum techniques, to name only the main ones:</p>
+<ul class="simple">
+<li><p>DSSS (Direct-Sequence Spread Spectrum): used for example by 3G (cellular), GPS</p></li>
+<li><p>FHSS (Frequency-Hopping Spread Spectrum): used for example by Bluetooth</p></li>
+</ul>
+<p>In this article, we focus only on DSSS. The concept is fairly simple: we multiply a baseband signal (bits) by a another
+spreading signal (spreading code, chips). The spreading signal is a specific code that has a much higher rate than the
+baseband signal: the chiprate is much higher than the bitrate. This has the effect of spreading the spectrum of the baseband
+signal, making it look more like noise.</p>
+<div class="figure align-center" id="id7">
+<span id="dsss-spreading-diagram"></span><a class="reference internal image-reference" href="../../_images/spreading_diagram.svg"><img alt="../../_images/spreading_diagram.svg" src="../../_images/spreading_diagram.svg" /></a>
+<p class="caption"><span class="caption-text">Spreading a signal</span><a class="headerlink" href="#id7" title="Permalink to this image"></a></p>
+</div>
+<p>The spread signal still contains the same amount of energy as the original signal. Therefore since the bandwidth has become much wider
+after spreading, the PSD (Power Spectral Density) on the other hand becomes much lower. We define the <strong>Spreading Factor</strong> as</p>
+<div class="math notranslate nohighlight">
+\[SF = \frac{Chiprate}{Bitrate}\]</div>
+<p>At reception the de-spreading process allows recovery of the original baseband signal. We perform the reverse operation,
+by cross-correlating our spread signal with the (known) spreading code. An interesting thing about this process is that if the
+received signal was contaminated by an interferer (uncorrelated to our wanted signal), the de-spreading process will naturally
+spread the interferer. The spread interferer will look like noise, easy to filter out; while the wanted signal will have
+recovered its “narrowband”/high PSD form. After de-spreading the SNR is increased by roughly the Spreading Factor which is why
+this technique <strong>allows us to recover signals that are seemingly below the noise floor</strong>.</p>
+<div class="figure align-center" id="id8">
+<span id="dsss-despreading-diagram"></span><a class="reference internal image-reference" href="../../_images/despreading_diagram.svg"><img alt="../../_images/despreading_diagram.svg" src="../../_images/despreading_diagram.svg" /></a>
+<p class="caption"><span class="caption-text">de-spreading with interference</span><a class="headerlink" href="#id8" title="Permalink to this image"></a></p>
+</div>
+</div>
+<div class="section" id="cdma">
+<h2>CDMA<a class="headerlink" href="#cdma" title="Permalink to this headline"></a></h2>
+<p>If we extend a little bit this concept, we can perform <strong>CDMA</strong>, or Code Division Multiple Access. CDMA is a technique used
+by 3G (CDMA2000, UMTS). It leverage DSSS in order to allow multiple users to <strong>transmit at the same time on the same frequency</strong>.</p>
+<p>This is done by using spreading codes that are <strong>orthogonal</strong> to each other, that is if we consider each code to be a vector,
+their <strong>dot product is zero</strong>. Expressed in another way, their <strong>cross-correlation is zero</strong>.</p>
+<p>Let’s say we have a message A spread with a code A. At reception, if we correlate this spread signal with code A we will get our message
+back. However, if we correlate it with another code B orthogonal to code A, the output should be zero. Now if we have multiple users
+each using their own code (orthogonal to the others), we should be able to transmit all of them simultaneously on the same
+frequency, and still recover the messages. Of course there are limits as in reality the codes are not perfect and the more
+users we add, the more the SNR degrades.</p>
+<p>A famous example of orthogonal code families are the <strong>Hadamard Matrix</strong> <a class="footnote-reference brackets" href="#id4" id="id1">1</a>. A Hadamard matrix is a square matrix
+containing values +1 or -1, and all rows of the matrix are orthogonal to each other. For example the 4th order Hadamard matrix is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}H_4 =   \begin{bmatrix}
+        1&amp; 1&amp; 1&amp; 1 \\
+        1&amp; -1&amp; 1&amp; -1 \\
+        1&amp; 1&amp; -1&amp; -1 \\
+        1&amp; -1&amp; -1&amp; 1
+        \end{bmatrix}\end{split}\]</div>
+<p>Consider the two first rows (1,1,1,1) and (1,-1,1,-1): their dot product is (1x1) + (1x-1) + (1x1) + (1x-1) = 0, i.e the two
+vectors are orthogonal. Let’s use that in an example to explain how it works: We use the 1st code to encode a message,
+and try to decode with the 2nd (orthogonal) code:</p>
+<div class="figure align-center" id="id9">
+<span id="dsss-hadamard"></span><a class="reference internal image-reference" href="../../_images/hadamard_example.svg"><img alt="../../_images/hadamard_example.svg" src="../../_images/hadamard_example.svg" /></a>
+<p class="caption"><span class="caption-text">Example of using a hadamard code</span><a class="headerlink" href="#id9" title="Permalink to this image"></a></p>
+</div>
+<p>Let’s go further: we now use the 2nd code to encode a 2nd message, and we add it to the 1st message as if we were transmitting
+them on the same channel:</p>
+<div class="figure align-center" id="id10">
+<span id="dsss-hadamard2"></span><a class="reference internal image-reference" href="../../_images/hadamard_example2.svg"><img alt="../../_images/hadamard_example2.svg" src="../../_images/hadamard_example2.svg" /></a>
+<p class="caption"><span class="caption-text">Encoding two messages to transmit on the same channel</span><a class="headerlink" href="#id10" title="Permalink to this image"></a></p>
+</div>
+<p>The composite pattern C contains both (encoded) messages A and B. If we try to decode it using code A, we find message A:</p>
+<div class="figure align-center" id="id11">
+<span id="dsss-hadamard3"></span><a class="reference internal image-reference" href="../../_images/hadamard_example3.svg"><img alt="../../_images/hadamard_example3.svg" src="../../_images/hadamard_example3.svg" /></a>
+<p class="caption"><span class="caption-text">Decoding message A from the composite pattern</span><a class="headerlink" href="#id11" title="Permalink to this image"></a></p>
+</div>
+<p>By applying a similar process with code B, the reader will realise that we end up decoding message B.</p>
+</div>
+<div class="section" id="python-example">
+<h2>Python example<a class="headerlink" href="#python-example" title="Permalink to this headline"></a></h2>
+<div class="pythoncode admonition">
+<p class="admonition-title">The full python code for this example is available</p>
+<p><a class="reference download internal" download="" href="../../_downloads/c343034d39dce8eb9aa9ec8da3969d49/iq-imbalance.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">here</span></code></a></p>
+<p>Validated with: Python 3.6.7 - Numpy 1.19.4 - Scipy 1.5.4 - Matplotlib 3.3.3</p>
+</div>
+<div class="section" id="messages">
+<h3>Messages<a class="headerlink" href="#messages" title="Permalink to this headline"></a></h3>
+<p>We want to transmit two messages:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Message</span> <span class="n">A</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">Message</span> <span class="n">B</span><span class="p">:</span> <span class="p">[</span><span class="n">Hidden</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Any binary stream is represented and processed in NRZ format (1 -&gt; 1 and 0 -&gt; -1) in the script.</p>
+</div>
+<p>For simplicity we assume the bitrate to be 1bps. We would like to transmit these two messages on the <strong>same channel</strong>.
+Problem: if we do that, they would interfere with each other. If we spread each message with the right code, we should be
+able to transmit both of them on the same channel without any issue.</p>
+</div>
+<div class="section" id="choosing-the-right-spreading-codes">
+<h3>Choosing the right spreading codes<a class="headerlink" href="#choosing-the-right-spreading-codes" title="Permalink to this headline"></a></h3>
+<p>The Hadamard codes we presented earlier are good but not ideal. Ideally our spreading codes should have two properties:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Noise-like autocorrelation</dt><dd><p>The bits in the spreading sequence should be as uncorrelated as possible, and the autocorrelation peak must be very narrow
+and very strong. This has two advantages: a high/narrow peak will allow easy detection of the pattern on the receiver side
+even if the signal is strongly distorted; and it will also help to combat multipath effects as delayed replicas can easily be
+detected.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Weak cross-correlation with other codes (ideally: orthogonality)</dt><dd><p>If the different codes are not uncorrelated, there will always be residual interference at the receiver. That interference will be
+proportional to the amount of cross-correlation between codes, and will limit the ability of receiver to correctly decode
+messages.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Noise-like sequences are called <strong>PN (Pseudo-Noise)</strong> sequences <a class="footnote-reference brackets" href="#id5" id="id2">2</a>. Following the universal principle of “there is no such thing
+as a free lunch”, the two properties mentionned above are not fully compatible: designing a code is a tradeoff between the two.</p>
+<p>A specific type of PN sequences called the <strong>Gold sequences</strong> <a class="footnote-reference brackets" href="#id6" id="id3">3</a> offer very good tradeoff between the autocorrelation and
+cross-correlation properties. Gold sequences, named after Robert Gold, are generated by modulo-2 sum of two PN sequences
+(more specifically m-sequences). They are used for example in the GPS system.</p>
+<p>In our example we use two Gold sequences of length 31:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">codeA</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">codeB</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="figure align-center" id="id12">
+<span id="dsss-gold-sequence"></span><a class="reference internal image-reference" href="../../_images/gold_correlationProperties.svg"><img alt="../../_images/gold_correlationProperties.svg" src="../../_images/gold_correlationProperties.svg" /></a>
+<p class="caption"><span class="caption-text">Gold sequences correlation properties (upsampled by a factor of 4)</span><a class="headerlink" href="#id12" title="Permalink to this image"></a></p>
+</div>
+<p>Both our codes our fairly noise-like: They have a very strong autocorrelation peak at the time of 0 lag, and that peak is very
+sharp: it’s only one sample. Everywhere else the autocorrelation is very low. Also, the cross-correlation of the two codes
+is good: it’s low everywhere. Still, it’s not zero, so there will be a residual interference pattern at the receiver.</p>
+</div>
+<div class="section" id="spreading-the-message">
+<h3>Spreading the message<a class="headerlink" href="#spreading-the-message" title="Permalink to this headline"></a></h3>
+<p>Using the two Gold codes shown above, we spread our messages A and B:</p>
+<div class="figure align-center" id="id13">
+<span id="dsss-spreadmessagea"></span><a class="reference internal image-reference" href="../../_images/messageA_spread.svg"><img alt="../../_images/messageA_spread.svg" src="../../_images/messageA_spread.svg" /></a>
+<p class="caption"><span class="caption-text">Message A spreading with Code A</span><a class="headerlink" href="#id13" title="Permalink to this image"></a></p>
+</div>
+<p>As the encoded pattern has a much higher “raw” bitrate than the original message, the spectrum is inevitably spread:</p>
+<div class="figure align-center" id="id14">
+<span id="dsss-spectrummessagea"></span><a class="reference internal image-reference" href="../../_images/messageA_spectrum.svg"><img alt="../../_images/messageA_spectrum.svg" src="../../_images/messageA_spectrum.svg" /></a>
+<p class="caption"><span class="caption-text">Message A spectrum before and after spreading</span><a class="headerlink" href="#id14" title="Permalink to this image"></a></p>
+</div>
+<p>Once we have encoded message B with code B, we can add messages A and B together to form a composite message C:</p>
+<div class="figure align-center" id="id15">
+<span id="dsss-messagec"></span><a class="reference internal image-reference" href="../../_images/messageC.svg"><img alt="../../_images/messageC.svg" src="../../_images/messageC.svg" /></a>
+<p class="caption"><span class="caption-text">Composite pattern</span><a class="headerlink" href="#id15" title="Permalink to this image"></a></p>
+</div>
+<p>This signal containing information from both messages A and B will be transmitted through a single communication channel.</p>
+</div>
+<div class="section" id="de-spreading">
+<h3>De-spreading<a class="headerlink" href="#de-spreading" title="Permalink to this headline"></a></h3>
+<p>At the receiver side, we receive the composite message. In order to recover the original messages A and B, we can use
+correlation. By correlating the composite pattern with code A for example, we <strong>should</strong> be able to recover message A.
+Indeed, since code B is orthogonal to code A; and since message B was encoded with code B, then correlating code A with
+the information from message B (inherently contained in the composite pattern) <strong>should</strong> yield only noise.</p>
+<p>On the other hand, correlating code A with the information from message A should lead to energy maximums following the encoded bits
+We try this with our python script and we get:</p>
+<div class="figure align-center" id="dsss-messagea-decoded">
+<a class="reference internal image-reference" href="../../_images/messageA_decode.svg"><img alt="../../_images/messageA_decode.svg" src="../../_images/messageA_decode.svg" /></a>
+</div>
+<p>We can clearly identify positive and negative peaks that stand out from the noise. If we assign a ‘1’ to a positive peak
+and a ‘0’ to a negative peak, we find:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">decoded</span> <span class="n">message</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Which is indeed, our message A. Similar process can be applied to decode message B.</p>
+</div>
+<div class="section" id="limitations">
+<h3>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline"></a></h3>
+<p>Spread-spectrum sounds great since we can transmit multiple messages at the same time using the same channel.
+What would prevent us from combining as many messages as possible, in order to maximize spectrum utilisation?</p>
+<p>For one, spreading codes are unfortunately not perfect: they are not perfectly noise-like, and families of codes
+that could be used do not have perfect cross-correlation properties.
+Therefore the more we add different messages, the more the overall SNR degrades and it becomes harder and harder
+to recover each message.</p>
+<p>Additionally, spread-spectrum, by its nature, uses more bandwidth. And bandwidth is very expensive. Nowadays,
+technologies such as WIFI, 4G, 5G use OFDM (Orthogonal Frequency Division Multiplexing) waveforms which are basically
+a tightly packed collection of narrowband signals.</p>
+</div>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline"></a></h2>
+<dl class="footnote brackets">
+<dt class="label" id="id4"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Hadamard_matrix">https://en.wikipedia.org/wiki/Hadamard_matrix</a></p>
+</dd>
+<dt class="label" id="id5"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p><a class="reference external" href="https://skynet.ee.ic.ac.uk/notes/CS_2016_7A_PN_codes_PN_signals_and_SSComms.pdf">https://skynet.ee.ic.ac.uk/notes/CS_2016_7A_PN_codes_PN_signals_and_SSComms.pdf</a></p>
+</dd>
+<dt class="label" id="id6"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
+<dd><p>R.Gold, Optimal binary sequences for spread spectrum multiplexing, IEEE Transactions on Information Theory, Vol.13 Issue 4, p619-621, 1967</p>
+</dd>
+</dl>
 </div>
 </div>
 

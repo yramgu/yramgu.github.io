@@ -119,16 +119,14 @@ We apply the trigonometric identity which gives us:
                                               &= \color{blue}X_I(t)\color{black}\cos(\omega_0t) - \color{red}X_Q(t)\color{black}\sin(\omega_0t)
     \end{align}
 
-If we want to perform arbitrary amplitude and phase modulation we need two low-frequency terms :math:`a(t)\cos(\phi(t))` and :math:`a(t)\sin(\phi(t))`.
-They are in fact respectively the :math:`X_I` and :math:`X_Q` components of the baseband signal represented in the :math:`I/Q` plane, as defined in the "Basics" section. 
-Since they are low frequency signals, they would be fairly easy to generate with a DAC.
+If we want to perform arbitrary amplitude and phase modulation we only need to act on the **amplitude** of a fixed-frequency LO.
+The LO is split into two orthogonal components :math:`\cos(\omega_0t)` and :math:`\sin(\omega_0t)`. The two amplitude terms
+:math:`a(t)\cos(\phi(t))` and :math:`a(t)\sin(\phi(t))` are in fact respectively the :math:`X_I` and :math:`X_Q` components of the baseband signal represented in the :math:`I/Q` plane, as defined in the "Basics" section. 
+Since they are low frequency signals, they would be fairly easy to generate with a DAC. 
 
-But now the carrier wave has been split into two terms :math:`\cos(\omega_0t)` and :math:`-\sin(\omega_0t)`, so we cannot use
-the simple modulator circuit shown above. We need a new circuit: the quadrature modulator.
-
-It becomes apparent that we can transmit two independant information, :math:`X_I` and :math:`X_Q`, on two different carriers
-that have the same frequency but are orthogonal to each other. These two independant components can individually be 
-recovered at the receiver by means of a quadrature demodulator.
+As the carrier wave has been split into two terms :math:`\cos(\omega_0t)` and :math:`-\sin(\omega_0t)`, we cannot use
+the simple modulator circuit shown above. We need a new circuit: the quadrature modulator. It will allow recovery of both
+:math:`X_I` and :math:`X_Q` components despite the fact we are really transmitting only one sinewave.
 
 So how do we perform the quadrature modulation in an actual circuit?
 
@@ -216,7 +214,7 @@ We have seen that a complex baseband signal can be defined as
                   &= a(t)e^{j\phi(t)}
     \end{align}
 
-Staying in the complex domain, we mix it with a complex sinusoid at frequency :math:`\omega_0`:
+Staying in the complex domain, we mix it with a complex sinusoid (the carrier) at frequency :math:`\omega_0` to perform the modulation:
 
 .. math::
 
@@ -275,7 +273,7 @@ DC Offset
 ----------------
 
 The first type of impairment is the DC offset. If :math:`I` and/or :math:`Q` exhibit a DC offset, this will shift the whole constellation
-in a certain direction (constellation (b) with an offset of 0.25). A DC offset will have another nasty consequence: LO leakage.
+in a certain direction (constellation (b) with an offset of 0.25 on both channels). A DC offset will have another nasty consequence: LO leakage.
 
 To show this let's define 
 
@@ -286,7 +284,7 @@ To show this let's define
         X_Q' &= X_Q + DC
     \end{align}
 
-Then if we mix with our LO we get
+Note that the DC offset will in reality be different for both channels. Then if we mix with our LO we get
 
 .. math::
 
@@ -379,5 +377,5 @@ the error vector called the **Error Vector Magnitude**, or EVM, defined as:
 
     EVM = \sqrt{I_{err}^2+Q_{err}^2}
 
-The EVM, a sort of SNR figure of merit, is often expressed in :math:`\%` or in :math:`dB`. Be careful the decibel value is computed using 20log(...) 
+The EVM, a sort of SNR figure of merit, is often expressed in :math:`\%` or in :math:`dB`. Be careful as the decibel value is computed using 20log(...) 
 and not 10log(...).

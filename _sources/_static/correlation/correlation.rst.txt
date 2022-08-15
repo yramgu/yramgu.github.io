@@ -193,9 +193,9 @@ Noise autocorrelation properties
 to each other. So if you correlate a signal with itself, what does it measure? It measures a signal's dependencies
 within itself, in other words repeating patterns, regularities, specific frequency content.
 
-But white noise is **supposed to be perfectly random**, i.e no repeating pattern. Therefore, at any point in time,
-**noise should produce a zero-output autocorrelation except when it's exactly aligned with itself**. Below is an example
-of noise measured with an RTL-SDR on the 868MHz ISM band.
+But white noise is **supposed to be perfectly random**, i.e noise samples are supposed to be completely uncorrelated to each other.
+Therefore, at any point in time, **noise should produce a zero-output autocorrelation except when it's exactly aligned with 
+itself**. Below is an example of noise measured with an RTL-SDR on the 868MHz ISM band.
 
 .. admonition:: The full python code for this example is available
     :class: pythonCode

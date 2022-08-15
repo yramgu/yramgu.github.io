@@ -46,7 +46,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../IQ-modulation/IQ-modulation.html">I/Q modulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../BPSK/BPSK.html">BPSK demodulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../DSSS/DSSS.html">Direct-Sequence Spread Spectrum (DSSS)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../DSSS/DSSS.html">Spread Spectrum</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">DSP tools</span></p>
 <ul class="current">
@@ -232,9 +232,9 @@ be the case and more complex methods of selection might be required.</p>
 <p>(AWG or Additive White Gaussian) Noise has very interesting autocorrelation properties. Recall correlation is a measure of how much two signals are similar
 to each other. So if you correlate a signal with itself, what does it measure? It measures a signal’s dependencies
 within itself, in other words repeating patterns, regularities, specific frequency content.</p>
-<p>But white noise is <strong>supposed to be perfectly random</strong>, i.e no repeating pattern. Therefore, at any point in time,
-<strong>noise should produce a zero-output autocorrelation except when it’s exactly aligned with itself</strong>. Below is an example
-of noise measured with an RTL-SDR on the 868MHz ISM band.</p>
+<p>But white noise is <strong>supposed to be perfectly random</strong>, i.e noise samples are supposed to be completely uncorrelated to each other.
+Therefore, at any point in time, <strong>noise should produce a zero-output autocorrelation except when it’s exactly aligned with
+itself</strong>. Below is an example of noise measured with an RTL-SDR on the 868MHz ISM band.</p>
 <div class="pythoncode admonition">
 <p class="admonition-title">The full python code for this example is available</p>
 <p><a class="reference download internal" download="" href="../../_downloads/909ccf885f8e6ac80a430aa27b534360/noise.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">here</span></code></a></p>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quadrature (IQ) modulation &mdash; Standing Waves</title>
+  <title>Bit Error Rate &mdash; Standing Waves</title>
       <link rel="stylesheet" href="../pygments.css" type="text/css" />
       <link rel="stylesheet" href="../css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../my_theme.css" type="text/css" />
@@ -15,6 +15,7 @@
         <script src="../jquery.js"></script>
         <script src="../underscore.js"></script>
         <script src="../doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -44,7 +45,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../IQ-modulation/IQ-modulation.html">I/Q modulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../BPSK/BPSK.html">BPSK demodulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../DSSS/DSSS.html">Direct-Sequence Spread Spectrum (DSSS)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../DSSS/DSSS.html">Spread Spectrum</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">DSP tools</span></p>
 <ul>
@@ -66,7 +67,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Quadrature (IQ) modulation</li>
+      <li>Bit Error Rate</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -75,9 +76,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="quadrature-iq-modulation">
-<h1>Quadrature (IQ) modulation<a class="headerlink" href="#quadrature-iq-modulation" title="Permalink to this headline"></a></h1>
-<p>RFU</p>
+  <div class="section" id="bit-error-rate">
+<h1>Bit Error Rate<a class="headerlink" href="#bit-error-rate" title="Permalink to this headline"></a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Article under construction</p>
+</div>
+<p><span class="math notranslate nohighlight">\(\phi(t)\)</span> the phase</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+    a(t)\cos\Bigl(\omega_0t+\phi(t)\Bigl) &amp;= \color{blue}a(t)\cos\Bigl(\phi(t)\Bigl)\color{black}\cos(\omega_0t) - \color{red}a(t)\sin\Bigl(\phi(t)\Bigl)\color{black}\sin(\omega_0t) \\
+                                          &amp;= \color{blue}X_I(t)\color{black}\cos(\omega_0t) - \color{red}X_Q(t)\color{black}\sin(\omega_0t)
+\end{align}\end{split}\]</div>
 </div>
 
 
